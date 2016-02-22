@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+<color name="Color_1">#f78181</color>
+<color name="Color_2">#f79f81</color>
+<color name="Color_3">#fe642e</color>
+<color name="Color_4">#df0101</color>
+<color name="Color_6">#ff8000</color>
+<color name="Color_7">#ffff00</color>
+<color name="Color_10">#86b404</color>
+<color name="Color_11">#80ff00</color>
+<color name="Color_13">#2efe64</color>
+<color name="Color_14">#00ffff</color>
+<color name="Color_15">#58faf4</color>
+<color name="Color_16">#01a9db</color>
+<color name="Color_17">#58d3f7</color>
+<color name="Color_18">#2e64fe</color>
+<color name="Color_19">#0431b4</color>
+<color name="Color_20">#642efe</color>
+<color name="Color_21">#5f04b4</color>
+<color name="Color_22">#be81f7</color>
+<color name="Color_23">#d358f7</color>
+<color name="Color_24">#8904b1</color>
+<color name="Color_25">#fe2ef7</color>
+<color name="Color_26">#b404ae</color>
+<color name="Color_28">#df01a5</color>
+<color name="Color_30">#ff0040</color>
+<color name="Color_31">#b40431</color>
+<color name="Color_33">#6e6e6e</color>
+<color name="Color_34">#bdbdbd</color>
+<color name="Color_35">#fe2ec8</color>
+<color name="Color_36">#00ff00</color>
+</resources>
