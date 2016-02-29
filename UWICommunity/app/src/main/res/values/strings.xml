@@ -7,13 +7,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="tips">Always walk with others. Only walk in well lit areas.
-        Avoid short-cuts through poorly lit or deserted areas
-        Park in well-lit, busy areas, preferable close to security
-        Have your keys ready before approaching the car
-        Look out for anyone loitering in the car park and report your observations
 
-    </string>
     <string name="title_activity_tips">Tips</string>
     <string name="title_activity_emergency_contact">Emergency Contact</string>
     <string name="ec_info">Below are Emergency Contact information, click to call if needed. </string>
