@@ -28,12 +28,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.example.megan.uwicommunity.R.drawable.alarmbutton;
 import static com.example.megan.uwicommunity.R.drawable.round_button;
 import static com.example.megan.uwicommunity.R.id.alarmButton;
+import static com.example.megan.uwicommunity.R.id.panic;
 
 public class EscortActivity extends AppCompatActivity  {
 
@@ -68,6 +70,7 @@ public class EscortActivity extends AppCompatActivity  {
     public void setTimer(View view) {
         final Button button = ((Button) findViewById(alarmButton));
         Button abort= (Button)findViewById(R.id.abort);
+        Button panic= (Button) findViewById(R.id.panic);
         //final boolean finished=false;
 
 //         make button rotate
@@ -79,6 +82,7 @@ public class EscortActivity extends AppCompatActivity  {
 //        Animation rotateCenter = AnimationUtils.loadAnimation(this, R.anim.rotate_center);
 //        button.startAnimation(rotateCenter);
         abort.setVisibility(View.VISIBLE);
+        panic.setVisibility(View.VISIBLE);
         countTaps++;
 
         if(countTaps<=1) {
@@ -88,7 +92,7 @@ public class EscortActivity extends AppCompatActivity  {
 
         //}// else reset to extend time or reset time
         cdt.cancel(); //cancel any possible existing timer
-        startTimer(view,button); // restart a new timer
+        startTimer(view, button); // restart a new timer
         //return;
     }
 
@@ -128,6 +132,25 @@ public class EscortActivity extends AppCompatActivity  {
     public  void abortFunction(View view){
         Button abort= (Button)findViewById(R.id.abort);
         abort.setVisibility(View.INVISIBLE);
+
+
+        Intent intent=new Intent(this,EscortActivity.class);
+        cdt.cancel();
+        this.finish();
+        startActivity(intent);
+        //restore alarm button to original state(push to start
+//        Button alarmbtn= (Button)findViewById(alarmButton);
+//        alarmbtn.setBackgroundResource(round_button);
+//        alarmbtn.setText("Push to Start");
+//        alarmbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+    }
+
+    public  void panicFunction(View view){
+        Button panic= (Button)findViewById(R.id.panic);
+       // panic.setVisibility(View.INVISIBLE);
+
+        Toast.makeText(getApplicationContext(),"Dialing Police",Toast.LENGTH_SHORT).show();
+        callPolice();
         //restore alarm button to original state(push to start
 //        Button alarmbtn= (Button)findViewById(alarmButton);
 //        alarmbtn.setBackgroundResource(round_button);
@@ -163,6 +186,9 @@ public class EscortActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
+    public void startWalkBud(View view){
+        Toast.makeText(getApplicationContext(),"No functionality yet",Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

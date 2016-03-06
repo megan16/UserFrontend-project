@@ -12,5 +12,9 @@
     <string name="title_activity_emergency_contact">Emergency Contact</string>
     <string name="ec_info">Below are Emergency Contact information, click to call if needed. </string>
     <string name="title_activity_escort">Escort</string>
+    <string name="abortBtn">ABORT</string>
+    <string name="panicBtn">Panic</string>
+    <string name="escortInstr">Escort helps with UWI night life.  It allows you to push the start button where you are given a time and if you do not push again to extend or stop it, assumes that something is wrong and calls and alert the campus police.</string>
+    <string name="wlkbddyBtn">Find a Walk Buddy</string>
 
 </resources>
