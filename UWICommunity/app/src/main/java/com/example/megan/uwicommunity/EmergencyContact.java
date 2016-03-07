@@ -76,9 +76,9 @@ public class EmergencyContact extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        Intent intent=new Intent(getApplicationContext(),SafetyActivity.class);
-        startActivity(intent);
-        finish();
+        //Intent intent=new Intent(getApplicationContext(),SafetyActivity.class);
+        //startActivity(intent);
+        this.finish();
         return true;
     }
 

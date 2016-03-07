@@ -30,12 +30,12 @@ public class TipsActivity extends AppCompatActivity {
 
         ArrayList<String> list= new ArrayList<String>();
 
-        list.add(" • Always walk with others.");
-        list.add(" • Only walk in well lit areas.");
-        list.add(" • Avoid short-cuts through poorly lit or deserted areas.");
-        list.add(" • Park in well-lit, busy areas, preferable close to security.");
-        list.add(" • Have your keys ready before approaching the car.");
-        list.add(" • Look out for anyone loitering in the car park and report your observations");
+        list.add("• Always walk with others.");
+        list.add("• Only walk in well lit areas.");
+        list.add("• Avoid short-cuts through poorly lit or deserted areas.");
+        list.add("• Park in well-lit, busy areas, preferable close to security.");
+        list.add("• Have your keys ready before approaching the car.");
+        list.add("• Look out for anyone loitering in the car park and report your observations");
 
         ArrayAdapter listAdapter=new ArrayAdapter<String>(this,R.layout.list_rows,list);
         ListView listView= (ListView) findViewById(R.id.tipsList);
@@ -57,9 +57,9 @@ public class TipsActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        Intent intent=new Intent(getApplicationContext(),SafetyActivity.class);
-        startActivity(intent);
-        finish();
+       // Intent intent=new Intent(getApplicationContext(),SafetyActivity.class);
+       // startActivity(intent);
+        this.finish();
         return true;
 
         // return super.onOptionsItemSelected(item);
