@@ -43,7 +43,8 @@
             android:name=".EscortActivity"
             android:label="@string/title_activity_escort"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Login"></activity>
+        <activity android:name=".Login" />
+        <activity android:name=".WalkBData"></activity>
     </application>
 
 </manifest>

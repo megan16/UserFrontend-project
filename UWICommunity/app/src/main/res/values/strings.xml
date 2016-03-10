@@ -17,4 +17,20 @@
     <string name="escortInstr">Escort helps with UWI night life.  It allows you to push the start button where you are given a time and if you do not push again to extend or stop it, assumes that something is wrong and calls and alert the campus police.</string>
     <string name="wlkbddyBtn">Find a Walk Buddy</string>
 
+    <string name="yesP">Yes</string>
+    <string name="noP">No</string>
+    <string name="uwiID">ID Number</string>
+
+    <string name="destinationList">
+        <item>Bus Route- 1st North Gate</item>
+        <item>South Gate- Gate Boys Direction</item>
+    </string>
+
+    <string name="meetUpList">
+        <item>Bus Route- 1st North Gate</item>
+        <item>South Gate- Gate Boys Direction</item>
+    </string>
+    <string name="submit">Submit</string>
+    <string name="meetUp">Meet Location:</string>
+    <string name="dest">Destination</string>
 </resources>

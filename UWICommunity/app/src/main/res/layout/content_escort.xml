@@ -12,7 +12,8 @@
     tools:context="com.example.megan.uwicommunity.EscortActivity"
     tools:showIn="@layout/activity_escort"
     android:background="#FFFAFA"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -35,7 +36,10 @@
             android:padding="5dp"
             android:lineSpacingExtra="3.5dp"
             android:layout_gravity="center_horizontal|top"
+            android:textSize="16sp"
              />
+
+        <!-- Push to start Button alarm btn -->
 
         <Button
             android:layout_width="wrap_content"
@@ -44,8 +48,7 @@
             android:id="@+id/alarmButton"
             android:width="150dp"
             android:height="150dp"
-            android:layout_gravity="center"
-            android:background="@drawable/round_button"
+            android:background="@drawable/alarm_button1"
             android:textColor="#000000"
             android:textStyle="bold"
             android:typeface="serif"
@@ -55,7 +58,8 @@
             android:shadowDy="2"
             android:shadowRadius="8"
             android:onClick="setTimer"
-            android:translationZ="0dp" />
+            android:translationZ="0dp"
+            android:layout_gravity="center" />
 
         <!-- Panic Button -->
         <Button
@@ -102,20 +106,22 @@
             android:padding="5dp"
             android:textStyle="bold|italic"
             android:textColor="@color/white"
-            android:visibility="invisible"
-            />
+            android:visibility="invisible" />
 
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wlkbddyBtn"
+            android:id="@+id/walkBud"
             android:layout_marginBottom="75dp"
             android:layout_gravity="center_horizontal|bottom"
             android:background="@drawable/round_edges_button"
             android:padding="10dp"
             android:onClick="startWalkBud"
             android:textStyle="bold|italic"/>
+
+
 
 
     </FrameLayout>

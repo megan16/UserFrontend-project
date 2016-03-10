@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!--<solid android:color="#03A9F4" />-->
+    <gradient
+        android:angle="135"
+        android:centerColor="#76FF03"
+        android:endColor="#8BC34A"
+        android:startColor="#8BC34A"
+        android:type="linear" />
+
+    <corners android:bottomRightRadius="8dp"
+        android:bottomLeftRadius="8dp"
+        android:topRightRadius="8dp"
+        android:topLeftRadius="8dp"/>
+
+    <padding
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp"
+    />
+    <size
+        android:width="150dp"
+        android:height="150dp"
+        />
+    <stroke
+        android:width="2dp"
+        android:color="@color/light_gray"
+        />
+
+</shape>
+
+
+<!-- Blue schema -->
+<!--android:centerColor="#66CCFF"-->
+        <!--android:endColor="#0099CC"-->
+        <!--android:startColor="#0099CC"-->
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item android:state_pressed="true" >-->
+    <!--<shape android:shape="oval">-->
+        <!--<android-->
+            <!--android:color="#449def" />-->
+        <!--<stroke-->
+            <!--android:width="1dp"-->
+            <!--android:color="#2f6699" />-->
+        <!--<corners-->
+            <!--android:radius="3dp" />-->
+        <!--<padding-->
+            <!--android:left="10dp"-->
+            <!--android:top="10dp"-->
+            <!--android:right="10dp"-->
+            <!--android:bottom="10dp" />-->
+    <!--</shape>-->
+<!--</item>-->
+<!--<item>-->
+    <!--<shape android:shape="oval">-->
+        <!--<gradient-->
+            <!--android:startColor="#449def"-->
+            <!--android:endColor="#2f6699"-->
+            <!--android:angle="270" />-->
+        <!--<stroke-->
+            <!--android:width="1dp"-->
+            <!--android:color="#2f6699" />-->
+        <!--<corners-->
+            <!--android:radius="4dp" />-->
+        <!--<padding-->
+            <!--android:left="10dp"-->
+            <!--android:top="10dp"-->
+            <!--android:right="10dp"-->
+            <!--android:bottom="10dp" />-->
+    <!--</shape>-->
+<!--</item>-->
+<!--</selector>-->
+
+
+
+    <!--<solid android:color="#00C853"-->
