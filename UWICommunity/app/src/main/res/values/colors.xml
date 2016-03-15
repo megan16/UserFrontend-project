@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="upload">#3F51B5</color>
-    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="abort">#FF4081</color>
     <color name="safetyColor">#ff1a1a</color>
@@ -12,3 +12,4 @@
     <color name="colorEvents">#03A9F4</color>
     <color name="extend">#72C156</color>
 </resources>
+    <!--#212121-->
