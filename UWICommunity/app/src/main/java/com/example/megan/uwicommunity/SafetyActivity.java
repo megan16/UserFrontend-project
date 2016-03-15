@@ -35,14 +35,24 @@ public class SafetyActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Notice to user on how to make a crime report
+        Snackbar.make(findViewById(R.id.coordinatorLayout),"Click the + to report a crime", Snackbar.LENGTH_SHORT).show();
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.upload);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                navToUpload();
             }
         });
+    }
+
+    public void navToUpload(){
+        Intent intent= new Intent(this,UploadCrime.class);
+        startActivity(intent);
+        //this.finish();
     }
 
     @Override
