@@ -33,4 +33,6 @@
     <string name="submit">Submit</string>
     <string name="meetUp">Meet Location:</string>
     <string name="dest">Destination</string>
+    <string name="canP">Cancel</string>
+    <string name="okP">Ok</string>
 </resources>

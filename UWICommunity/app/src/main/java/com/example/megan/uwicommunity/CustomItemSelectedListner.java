@@ -18,6 +18,7 @@ public class CustomItemSelectedListner implements AdapterView.OnItemSelectedList
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-            Log.d("ME", "They selected something: Invalid must select something");
+
+            Log.d("MEG", "Invalid must select something");
     }
 }

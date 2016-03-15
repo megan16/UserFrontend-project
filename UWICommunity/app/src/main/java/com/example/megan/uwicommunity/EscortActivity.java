@@ -178,15 +178,15 @@ public class EscortActivity extends AppCompatActivity  {
     }
 
     public void setUpBudDialog(){
-        final String[] items={"Male","Female"};
+        final String[] items={"Male","Female","None"};
         AlertDialog.Builder builder= new AlertDialog.Builder(EscortActivity.this);
         int selectedItem = 0;
-        builder.setTitle("Walk Buddy Preference:\n\tClick (No) if you have none.");
+        builder.setTitle("Please choose a gender preference for your Walk Buddy: ");
 
         //.setChoiceItems(R.array.selectedItem)
         builder.setSingleChoiceItems(items,selectedItem,null);
 
-        builder.setPositiveButton(R.string.yesP, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.okP, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -194,25 +194,25 @@ public class EscortActivity extends AppCompatActivity  {
                 // do a log instead which=-1
                 int getGender = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
 
-                Log.d("ME", "Yes i have a gender preference: " + items[getGender]);
+                Log.d("ME", "Gender preference: " + items[getGender]);
                 Toast.makeText(getApplicationContext(),
-                        "Yes i have a gender preference" + items[getGender] +
+                        "Gender preference: " + items[getGender] +
                                 " send to next activity", Toast.LENGTH_SHORT).show();
                 walkBuddyDialog.dismiss();
                 Intent intent=new Intent(getApplicationContext(),WalkBData.class);
                 startActivity(intent);
             }
         });
+
 //
-        builder.setNegativeButton(R.string.noP, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.canP, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //redirect which=-2 => no
-                Log.d("ME", "Yes i have a gender preference: " + which);
-                Toast.makeText(getApplicationContext(), "Redirecting..", Toast.LENGTH_SHORT).show();
-                walkBuddyDialog.dismiss();
-                Intent intent=new Intent(getApplicationContext(),WalkBData.class);
-                startActivity(intent);
+                Log.d("ME", "Cancelling walk buddy ");
+
+                walkBuddyDialog.cancel();
+
             }
         });
 

@@ -44,11 +44,18 @@ public class WalkBData extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             Log.d("ME", "Do web services and make jsonObjects");
-                Toast.makeText(getApplicationContext(), "No web service yet values selected" + meetUpList.getSelectedItem()+
-                        "& " + destinationList.getSelectedItem(), Toast.LENGTH_SHORT);
 
-                Log.d("ME","values selected"+meetUpList.getSelectedItem()+
+             Log.d("MEG", "Do web services");
+
+                if(meetUpList.getSelectedItem().toString().equalsIgnoreCase("Select Location") ||
+                   destinationList.getSelectedItem().toString().equalsIgnoreCase("Select Location")){
+
+                    Toast.makeText(getApplicationContext(), "Invalid please select a location",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                //else
+                Log.d("MEG","values selected: "+meetUpList.getSelectedItem()+
                         "& "+destinationList.getSelectedItem());
             }
         });
@@ -58,11 +65,13 @@ public class WalkBData extends AppCompatActivity {
 
     public void addItemsToSpinners(){
         List <String> list= new ArrayList<String>();
+        //TODO:Make select location not a choice& default
         list.add("Select location");
         list.add("Bus Route- North Gate (Yvettes)");
         list.add("South Gate- Gate Boys");
 
-        ArrayAdapter <String> adapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,list);
+        ArrayAdapter <String> adapter= new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item,list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         meetUpList.setAdapter(adapter);
         destinationList.setAdapter(adapter);
