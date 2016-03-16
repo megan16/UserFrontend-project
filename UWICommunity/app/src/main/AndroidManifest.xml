@@ -44,8 +44,14 @@
             android:label="@string/title_activity_escort"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Login" />
-        <activity android:name=".WalkBData" />
-        <activity android:name=".UploadCrime"></activity>
+        <activity
+            android:name=".WalkBData"
+            android:theme="@style/SafetyTheme"
+            />
+
+        <activity
+            android:name=".UploadCrime"
+            android:theme="@style/SafetyTheme"/>
     </application>
 
 </manifest>

@@ -29,7 +29,7 @@
         <item name="android:background">@color/safetyColor</item>
         <item name="android:textColor">@color/white</item>
     </style>
-    <!-- End of Action bar for safety -->
+    <!-- End of Action bar for upload_crime -->
 
 
     <style name="AppTheme.NoActionBar">

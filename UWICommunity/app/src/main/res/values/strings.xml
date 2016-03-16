@@ -35,4 +35,6 @@
     <string name="dest">Destination</string>
     <string name="canP">Cancel</string>
     <string name="okP">Ok</string>
+    <string name="done">Done</string>
+    <string name="verifySubmit">Are you sure you want to submit?</string>
 </resources>
