@@ -37,4 +37,6 @@
     <string name="okP">Ok</string>
     <string name="done">Done</string>
     <string name="verifySubmit">Are you sure you want to submit?</string>
+    <string name="uploadPicQuest">Do you have photographic evidence?</string>
+    <string name="cDescript">A short description on any additional information you may have.</string>
 </resources>

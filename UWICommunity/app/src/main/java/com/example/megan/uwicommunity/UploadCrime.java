@@ -44,7 +44,6 @@ public class UploadCrime extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Verify submission",Toast.LENGTH_SHORT).show();
             verifySubmission();
 
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
