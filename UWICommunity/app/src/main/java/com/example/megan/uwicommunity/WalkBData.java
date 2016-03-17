@@ -66,7 +66,7 @@ public class WalkBData extends AppCompatActivity {
     public void addItemsToSpinners(){
         List <String> list= new ArrayList<String>();
         //TODO:Make select location not a choice& default
-        list.add("Select location");
+        list.add("Select Location");
         list.add("Bus Route- North Gate (Yvettes)");
         list.add("South Gate- Gate Boys");
 

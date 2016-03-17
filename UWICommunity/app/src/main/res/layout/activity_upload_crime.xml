@@ -9,13 +9,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.megan.uwicommunity.UploadCrime"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/content">
 
 
     <Spinner
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/crimeCategory"/>
+        android:id="@+id/crimeCategory"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,19 +33,37 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/crimeLoc"/>
+                android:id="@+id/crimeLoc"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="Description:"
+                android:padding="5dp"
+                android:layout_marginTop="5dp"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/cDescript"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:padding="5dp"
+                android:textSize="16sp"
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/description"
                 android:background="@drawable/text_border"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:maxLength="100"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
+                android:paddingEnd="5dp"
+                android:paddingRight="10dp"
+                android:gravity="top"
+                />
 
 
 
@@ -52,7 +73,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/uploadPicQuest"
                 android:padding="5dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/black"/>
 
             <RadioGroup
                 android:layout_width="match_parent"
@@ -76,11 +99,12 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="@drawable/user2"
+                android:layout_height="180dp"
+                android:background="@drawable/user1"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:id="@+id/picture"/>
 
             <!--TODO:fix picture-->
 
