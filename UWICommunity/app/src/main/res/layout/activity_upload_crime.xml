@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:TODO="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -12,13 +11,6 @@
     android:orientation="vertical"
     android:id="@+id/content">
 
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/crimeCategory"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,41 +25,18 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/crimeCategory"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/crimeLoc"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:text="Description:"
-                android:padding="5dp"
-                android:layout_marginTop="5dp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/cDescript"
-                android:layout_marginTop="5dp"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/description"
-                android:background="@drawable/text_border"
-                android:layout_marginBottom="10dp"
-                android:maxLength="100"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"
-                android:paddingEnd="5dp"
-                android:paddingRight="10dp"
-                android:gravity="top"
-                />
-
-
-
-<!-- Piture Upload section -->
+            <!-- Picture Upload section -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,17 +66,58 @@
                     android:layout_marginStart="20dp"/>
             </RadioGroup>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="180dp"
-                android:background="@drawable/user1"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center"
-                android:visibility="invisible"
-                android:id="@+id/picture"/>
+                android:gravity="center"
+                android:id="@+id/picture"
+                android:scaleType="fitXY"
+                android:layout_centerHorizontal="true"
+                />
 
             <!--TODO:fix picture-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/uploadPicButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:src="@drawable/ic_camera"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
+        </RelativeLayout>
+
+            <!--Description section-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="Description:"
+                android:padding="5dp"
+                android:layout_marginTop="15dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cDescript"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/description"
+                android:background="@drawable/text_border"
+                android:layout_marginBottom="10dp"
+                android:maxLength="500"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
+                android:paddingEnd="5dp"
+                android:paddingRight="10dp"
+                android:gravity="top" />
 
 
         </LinearLayout>

@@ -30,7 +30,7 @@ public class WalkBData extends AppCompatActivity {
         submit= (Button) findViewById(R.id.submit);
 
         addItemsToSpinners();
-        setUpSpinnerListners();
+        setUpSpinnerListeners();
         onSubmit();
 
         getSupportActionBar().setTitle("Walk Buddy");
@@ -79,7 +79,7 @@ public class WalkBData extends AppCompatActivity {
 
     }
 
-    public void setUpSpinnerListners(){
+    public void setUpSpinnerListeners(){
         meetUpList.setOnItemSelectedListener(new CustomItemSelectedListner());
 
     }

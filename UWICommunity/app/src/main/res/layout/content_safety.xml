@@ -10,11 +10,17 @@
     tools:context="com.example.megan.uwicommunity.SafetyActivity"
     tools:showIn="@layout/app_bar_safety">
 
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--style="@style/myHeadingStyle"-->
+        <!--android:text="Crime Dashboard"-->
+        <!--/>-->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/myHeadingStyle"
-        android:text="Crime Dashboard"
-        />
-
+        android:text="There are no post to show"
+        android:gravity="center_horizontal"
+        android:padding="5dp"/>
 </RelativeLayout>

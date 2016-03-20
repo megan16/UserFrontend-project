@@ -4,6 +4,10 @@
 
     <!-- my permissions -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <!-- end of my permissions -->
     <application
@@ -51,7 +55,7 @@
 
         <activity
             android:name=".UploadCrime"
-            android:theme="@style/SafetyTheme"/>
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

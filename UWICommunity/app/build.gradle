@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.example.megan.uwicommunity"
         minSdkVersion 15
@@ -22,6 +21,8 @@ android {
             assets.srcDirs = ['src/main/assets', 'src/main/res/layout/content/']
             res.srcDirs = ['src/main/res', 'src/main/res/layout/content']
         }
+    }
+    productFlavors {
     }
 }
 
