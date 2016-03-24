@@ -1,6 +1,7 @@
 package com.example.megan.uwicommunity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -29,10 +34,17 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 //TODO: check all fields on submission
 public class UploadCrime extends AppCompatActivity {
-    private static final int CAMERA_REQUEST =1888 ;
+    private static final String URL ="https://projectcomp3990.herokuapp.com/addCrime" ;
     private Spinner locList;
     private Spinner crimeTypeList;
     private RadioGroup imageChoiceRadioGroup;
@@ -52,6 +64,8 @@ public class UploadCrime extends AppCompatActivity {
     private final int CAMERA_CAPTURE_REQUEST_CODE=100;
     private final int GALLERY_REQUEST_CODE=200;
     private static Bitmap photo=null;
+
+    private EditText desc;
 
 
     @Override
@@ -67,12 +81,13 @@ public class UploadCrime extends AppCompatActivity {
         locList= (Spinner)findViewById(R.id.crimeLoc);
         addLocationToSpinner(); // add location stored in database to dropdown list
         addCrimeTypesToSpinner(); //adds the categories of crimes to a list for a user to choice from
+        desc= (EditText) findViewById(R.id.description);
 
         imageChoiceRadioGroup= (RadioGroup) findViewById(R.id.uploadPicChoice); //get radio group
         pictureUpload= (ImageView) findViewById(R.id.picture);
         pictureUpload.setImageResource(0);// clear any possible previous resource
         photo=null; //clear any possible content to avoid writing duplicate pictures as it's global
-        pictureUpload.setImageResource(R.drawable.user1); //set up deafult pictue
+        pictureUpload.setImageResource(R.drawable.user1); //set up default picture
         uploadButton= (FloatingActionButton) findViewById(R.id.uploadPicButton);
 
         getChoice(); //get whether or not the user has a picture to upload or not
@@ -86,7 +101,55 @@ public class UploadCrime extends AppCompatActivity {
             }
         });
 
+        //Web services
+
+
     }
+
+    public void webService(RequestParams params){
+
+        AsyncHttpClient client= new AsyncHttpClient();
+
+        //client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        client.post(getApplicationContext(),URL, params,new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d("MEG", "Success Status Code " + statusCode);
+                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT).show();
+                try {
+                    String response=new String(responseBody,"UTF-8");
+                    Log.d("MEG", "Success Status Code " +response);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                // go to homepage
+                //  Intent intent= new Intent(getApplicationContext(),HomeActivity.class);
+                //startActivity(intent);
+                closeActivity();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                String response= null;
+                try {
+                    response = new String(responseBody,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getApplicationContext(),""+statusCode+".."+response,Toast.LENGTH_SHORT).show();
+                Log.d("MEG", "Failure Status Code " + statusCode+".."+response);
+
+                if(statusCode==500){
+                    Toast.makeText(getApplicationContext(),"Ensure that ID doesnt already exist",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+
+
+
 
 
     private void uploadPicker(){
@@ -119,7 +182,6 @@ public class UploadCrime extends AppCompatActivity {
         picker.setCancelable(true);
         picker.show();
 
-
     }
 
     private void uploadImage(int choice) {
@@ -141,7 +203,7 @@ public class UploadCrime extends AppCompatActivity {
 
         }else
             if(choice==2){
-                //choose to choose from gallary
+                //choose to choose from gallery
                 Intent galleryIntent= new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
 
@@ -162,8 +224,6 @@ public class UploadCrime extends AppCompatActivity {
         String timeStamp= new SimpleDateFormat("yyyymmdd_hhmmss",Locale.getDefault()).format(new Date());
         File mediaFile=new File(pictureDir.getPath()+File.separator+"Perp_"+timeStamp+".jpg");
        // Log.d("MEG","Dir: "+mediaFile.getAbsolutePath());
-
-
 
 
         return mediaFile;
@@ -292,8 +352,12 @@ public class UploadCrime extends AppCompatActivity {
         list.add("Peeping Toms");
         list.add("Assault");
         list.add("Motor Vandalism");
+        list.add("Kidnapping");
+        list.add("Missing Person");
 
-        Collections.sort(list.subList(1,list.size()));// sort list for user dispaly
+
+        Collections.sort(list.subList(1, list.size()));// sort list for user dispaly
+        list.add("Other");// leave as last option
         ArrayAdapter <String> adapter= new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item,list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -317,36 +381,60 @@ public class UploadCrime extends AppCompatActivity {
 
     public void verifySubmission(){
 
-        final AlertDialog.Builder alert=new AlertDialog.Builder(UploadCrime.this);
-        alert.setMessage(R.string.verifySubmit);
-        alert.setPositiveButton(R.string.yesP, new DialogInterface.OnClickListener() {
+        //check values 1st then verify via dialog
+        if(crimeTypeList.getSelectedItem().toString().equalsIgnoreCase("select crime")){
+            Toast.makeText(getApplicationContext(), "Invalid please select a crime",
+                    Toast.LENGTH_SHORT).show();
+        }else
+        if(locList.getSelectedItem().toString().equalsIgnoreCase("select location")){
+            Toast.makeText(getApplicationContext(), "Invalid please select a location",
+                    Toast.LENGTH_SHORT).show();
+        }else
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // perform web services
-                // save the image
-                //send kill activity and go home
-                if(photo!=null)
-                saveImageToFolderStorage(photo);
-                closeActivity();
+        if(imageChoiceRadioGroup.getCheckedRadioButtonId()== -1){
+            Toast.makeText(getApplicationContext(), "Invalid please whether you have photographic evidence",
+                    Toast.LENGTH_SHORT).show();
+        }else {
 
-            }
-        });
+            //else all values should be valid
+            RequestParams reqParams = new RequestParams();
+            reqParams.put("category", crimeTypeList.getSelectedItem().toString());
+            reqParams.put("desc", desc.getText().toString());
+            reqParams.put("loc", locList.getSelectedItem().toString());
+            reqParams.put("picture", getMediaFile().toString());
+            //TODO: add location
+            webService(reqParams);
 
-        alert.setNegativeButton(R.string.canP, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                Toast.makeText(getApplicationContext(), "If you wish to discard simply press back to go home",
-                        Toast.LENGTH_LONG).show();
-            }
+            final AlertDialog.Builder alert = new AlertDialog.Builder(UploadCrime.this);
+            alert.setMessage(R.string.verifySubmit);
+            alert.setPositiveButton(R.string.yesP, new DialogInterface.OnClickListener() {
 
-        });
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // perform web services
+                    // save the image
+                    //send kill activity and go home
+                    if (photo != null)
+                        saveImageToFolderStorage(photo);
+                    closeActivity();
+
+                }
+            });
+
+            alert.setNegativeButton(R.string.canP, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    Toast.makeText(getApplicationContext(), "If you wish to discard simply press back to go home",
+                            Toast.LENGTH_LONG).show();
+                }
+
+            });
 
 
-        alert.create();
-        alert.show();
-
+            alert.create();
+            alert.show();
+        }
 
     }
 

@@ -35,7 +35,7 @@
             android:typeface="serif"
             android:padding="5dp"
             android:lineSpacingExtra="3.5dp"
-            android:layout_gravity="center_horizontal|top"
+            android:gravity="center_horizontal|top"
             android:textSize="16sp"
              />
 
@@ -57,7 +57,6 @@
             android:shadowDx="3"
             android:shadowDy="2"
             android:shadowRadius="8"
-            android:onClick="setTimer"
             android:translationZ="0dp"
             android:layout_gravity="center" />
 
@@ -108,7 +107,6 @@
             android:textColor="@color/white"
             android:visibility="invisible" />
 
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,6 +119,15 @@
             android:onClick="startWalkBud"
             android:textStyle="bold|italic"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:textSize="20sp"
+            android:typeface="serif"
+            android:textStyle="bold|italic"
+            android:layout_gravity="center"
+            android:layout_marginTop="115dp"/>
 
 
 

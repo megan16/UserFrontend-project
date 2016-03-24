@@ -57,6 +57,14 @@ public class EscortActivity extends AppCompatActivity  {
 
         wb= (Button) findViewById(R.id.walkBud);
         walkBudListener();  // call button onclick listener function
+        final Button alertBtn= (Button) findViewById(R.id.alarmButton);
+        // on touch listener
+        alertBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTimer(v);
+            }
+        });
 
     }
 
@@ -143,7 +151,7 @@ public class EscortActivity extends AppCompatActivity  {
     }
 
     private void callPolice() {
-        final String phoneNo = "tel:8686408650";
+        final String phoneNo = "tel:8686622022,83510";
 
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(phoneNo));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

@@ -14,7 +14,8 @@
     <string name="title_activity_escort">Escort</string>
     <string name="abortBtn">ABORT</string>
     <string name="panicBtn">Panic</string>
-    <string name="escortInstr">Escort helps with UWI night life.  It allows you to push the start button where you are given a time and if you do not push again to extend or stop it, assumes that something is wrong and calls and alert the campus police.</string>
+    <string name="escortInstr">Ensure Location is on &amp; push to start\nTap again to extend timer\n If timer is not aborted the Campus Police will be contacted
+        &amp; location sent\nPress Panic for Emergency</string>
     <string name="wlkbddyBtn">Find a Walk Buddy</string>
 
     <string name="yesP">Yes</string>
@@ -39,4 +40,5 @@
     <string name="verifySubmit">Are you sure you want to submit?</string>
     <string name="uploadPicQuest">Do you have photographic evidence?</string>
     <string name="cDescript">Enter a short description on any additional information you may have.\n\n(Max:200)</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

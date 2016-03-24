@@ -4,10 +4,14 @@
 
     <!-- my permissions -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- end of my permissions -->
     <application
@@ -35,7 +39,7 @@
             android:label="@string/title_activity_tips"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EmergencyContact"
+           android:name=".EmergencyContact"
             android:label="@string/title_activity_emergency_contact"
             android:parentActivityName=".SafetyActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -50,12 +54,21 @@
         <activity android:name=".Login" />
         <activity
             android:name=".WalkBData"
-            android:theme="@style/SafetyTheme"
-            />
-
+            android:theme="@style/SafetyTheme" />
         <activity
             android:name=".UploadCrime"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".QuickReport" />
+
+        <meta-data
+            android:name="com.google.android.geo.AIzaSyBeULVa0TQ1mLPksD-fzdJPLxYfpuXDyrg"
+            android:value="AIzaSyBeULVa0TQ1mLPksD-fzdJPLxYfpuXDyrg" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+
+
     </application>
 
 </manifest>
