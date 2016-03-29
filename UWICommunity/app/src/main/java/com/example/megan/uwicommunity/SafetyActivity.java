@@ -93,15 +93,14 @@ public class SafetyActivity extends AppCompatActivity
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.uploadfab);
-        fab.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    navToUpload(v);
-                }
-                return false;
-            }
+        fab.bringToFront();
+        fab.setOnClickListener(new View.OnClickListener() {
 
+
+            @Override
+            public void onClick(View v) {
+                navToUpload(v);
+            }
         });
 
         list= (ListView) findViewById(R.id.listCrimeReports);
