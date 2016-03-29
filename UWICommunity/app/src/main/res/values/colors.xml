@@ -13,7 +13,8 @@
     <color name="yellowB">#E6F005</color>
     <color name="redB">#FE0133</color>
     <color name="blueB">#0B55EF</color>
-    <color name="colorEvents">#03A9F4</color>
+    <color name="lightBlue">#03A9F4</color>
     <color name="extend">#72C156</color>
+    <color name="uploadtext">#43C600</color>
 </resources>
     <!--#212121-->

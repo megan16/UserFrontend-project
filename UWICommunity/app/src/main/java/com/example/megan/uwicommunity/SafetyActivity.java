@@ -6,10 +6,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,22 +41,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SafetyActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String URL ="https://projectcomp3990.herokuapp.com/crimeReports";
-    private String type;
+    private String type=null;
     private String desc;
     private String loc;
     private String date;
     private String lng;
     private String lat;
-    private String pic;
+    private File pic=null;
     private MyBaseAdapter adapter;
     private ListView list;
+
+    HashMap<String,String> reportsMap;
+    private String description;
+    private String location=null;
+    private ArrayList <HashMap<String,String>> reportList;
+    private ArrayList<File> picturesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,30 +91,54 @@ public class SafetyActivity extends AppCompatActivity
         Snackbar.make(findViewById(R.id.coordinatorLayout),"Click the + to report a crime", Snackbar.LENGTH_SHORT).show();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.upload);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.uploadfab);
+        fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Redirecting..",Toast.LENGTH_SHORT);
-                navToUpload();
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    navToUpload(v);
+                }
+                return false;
             }
+
         });
+
+        list= (ListView) findViewById(R.id.listCrimeReports);
+        reportList= new ArrayList<HashMap<String,String>>();
+        picturesList= new ArrayList<File>();
 
         webService();
     }
 
-    public void navToUpload(){
+    public void navToUpload(View v){
+        Log.d("MEG","I was called");
         Intent intent= new Intent(this,UploadCrime.class);
         startActivity(intent);
         //this.finish();
     }
 
     // get updates
+//    @Override
+//    protected void onStart(){
+//        super.onStart();
+//        if(isNetworkAvailable(SafetyActivity.this)){
+//            list.setAdapter(null);
+//            webService();
+//            //add to screen
+//
+//        }
+//    }
+
+    @Override
     protected void onResume(){
         super.onResume();
         if(isNetworkAvailable(SafetyActivity.this)){
-            webService();
+            //list.setAdapter(null);//clean all data
+            //webService();
             //add to screen
+            if(adapter!=null)
+            adapter.notifyDataSetChanged();
 
         }
     }
@@ -117,11 +157,7 @@ public class SafetyActivity extends AppCompatActivity
         Log.d("MEG", "Web services to retrieved called");
         //client.addHeader("Content-Type", "application/json; charset=utf-8");
         client.get(this,URL,new JsonHttpResponseHandler() {
-//
-//            @Override
-//            public void setUseSynchronousMode(boolean value) {
-//                super.setUseSynchronousMode(true);
-//            }
+
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -129,7 +165,7 @@ public class SafetyActivity extends AppCompatActivity
                 if(statusCode==200){
                    // String crimeType=response.toString();
                     Log.d("MEG","Success JsonObject");
-
+                    list.setAdapter(null);//clean all data
 
                 }
             }
@@ -137,59 +173,14 @@ public class SafetyActivity extends AppCompatActivity
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                String respArray = response.toString();
-                JSONObject report;
-           //     Log.d("MEG", "onSuccess Array: " + respArray.toString());
+                //String respArray = response.toString();
+           //     Log.d("MEG", "onSuccess Array: " + respArray.toString());4
+                type=null;
+                desc=null;
+                loc=null;
+                pic=null;
 
-                    try {
-                        for(int i=0; i<=response.length();i++) {
-                            report = (JSONObject)response.getJSONObject(i);
-                            Log.d("MEG", "onSuccess Array: " +response.toString() );
-
-                            ImageView imageView= (ImageView)findViewById(R.id.crImg);
-                            File imgFile= new File((String) response.getJSONObject(i).get("pic").toString());
-                            if(imgFile.exists()){
-
-                                imageView.setImageURI(Uri.fromFile(imgFile));
-                            }
-
-                            desc = response.getJSONObject(i).get("desc").toString();
-
-                            TextView loc2= (TextView)findViewById(R.id.crLoc);
-                            loc2.setText(response.getJSONObject(i).get("loc").toString());
-//status
-                            lat =response.getJSONObject(i).get("latitude").toString();
-                            lng = response.getJSONObject(i).get("longitude").toString();
-                            TextView type2 = (TextView)findViewById(R.id.crType); // title
-                            type2.setText(response.getJSONObject(i).get("type").toString());
-
-
-
-
-                            //TODO:Picture properly
-                            //type = response.getJSONObject(i).get("type").toString();
-
-                            date = response.getJSONObject(i).get("date").toString();
-                            //loc = response.getJSONObject(i).get("loc").toString();
-
-                         //   pic = response.getJSONObject(i).get("picture").toString();
-                            Log.d("MEG", "We here: "+type + "," + desc + "");
-
-                            //(create list and pass them to this
-//                        ArrayList pics= new ArrayList();
-//                        pics.add(pic);
-//                        ArrayList types= new ArrayList();
-//                        types.add(type);
-//                        ArrayList locs= new ArrayList();
-//                        locs.add(loc);
-//
-//                        adapter = new MyBaseAdapter(SafetyActivity.this,pics,types,locs);
-//                        list.setAdapter(adapter);
-                            //get picture
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                getReportsFromServer(response);
 
 
             }
@@ -205,6 +196,80 @@ public class SafetyActivity extends AppCompatActivity
             }
         });
     }
+
+    private void getReportsFromServer(JSONArray response){
+        JSONObject report = null;
+        String user="";
+        byte [] stringToImage=null;
+        String image=null;
+
+        for(int i=0; i<response.length();i++) {
+            try {
+                report = (JSONObject)response.getJSONObject(i);
+                image=report.getString("picture");
+    //            description=""+report.getString("desc");
+                location=""+report.getString("location");
+                type=""+report.getString("type");
+      //          date= ""+report.getString("date");
+//                lng= "Long: "+report.getString("longitude");
+  //              lat="Lat: "+report.getString("latitude");
+                Log.d("MEG", "Description: " + description);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //SET STRING FOR LOG DATA HERE (not setting inside try catch)
+            //user= "Num:"+i+"\n"+description+"\n"+location+"\n"+type+"\n"+date+"\n"+lng+" "+lat+"\n\n";
+            File perpDir= new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"Perps");
+            if(!perpDir.exists()){
+                if(!perpDir.mkdirs()){
+                    Log.d("MEG", "Failed to create directory: " + perpDir.getPath());
+                }
+            }
+
+            if(image!=null)
+            stringToImage= Base64.decode(image,Base64.DEFAULT);
+            pic= new File(perpDir.getAbsolutePath()+File.separator+"Suspect_"+i);
+            if(stringToImage!=null){
+
+                try {
+                    FileOutputStream fos=new FileOutputStream(pic);
+                    fos.write(stringToImage);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            reportsMap=new HashMap<String,String>();
+        //    reportsMap.put("desc",description);
+            reportsMap.put("loc", location);
+            reportsMap.put("type", type);
+        //    reportsMap.put("date", date);
+           // if(!lng.isEmpty() && !lat.isEmpty()){
+          //      reportsMap.put("lng",lng);
+            //    reportsMap.put("lat", lat);
+            //}
+
+            reportList.add(reportsMap);
+            picturesList.add(pic); //add corresponding picture to list
+            //if if null we put as we use a default picture in said case
+            //Log.d("MEG","Report: "+user);
+        }
+//        for(Map.Entry<String,String>entry : reports.entrySet() ){
+//            Log.i("MEG",entry.getKey()+" : "+entry.getValue());
+//        }
+
+        adapter= new MyBaseAdapter(SafetyActivity.this,picturesList,reportList);
+        list.setAdapter(adapter);
+
+
+    }
+
+
 
     private boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivity= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

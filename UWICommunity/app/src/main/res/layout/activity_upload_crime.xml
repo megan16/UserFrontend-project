@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
@@ -16,7 +17,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
 
@@ -29,43 +29,58 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:typeface="serif"
                 android:text="Select the type of crime"
                 android:padding="5dp"
                 android:layout_marginTop="15dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/uploadtext"/>
 
-            <Spinner
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/crimeCategory"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
+                android:background="@color/white">
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/crimeCategory"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:theme="@style/appThemeDropList" />
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textColor="@color/uploadtext"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:typeface="serif"
                 android:text="Select the Location"
                 android:padding="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 />
 
-            <Spinner
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/crimeLoc"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp" />
+                android:background="@color/white">
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/crimeLoc"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:theme="@style/appThemeDropList"/>
+            </LinearLayout>
+
 
             <!-- Picture Upload section -->
             <TextView
@@ -73,18 +88,17 @@
                 android:layout_height="wrap_content"
                 android:text="@string/uploadPicQuest"
                 android:padding="5dp"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:layout_marginTop="20dp"
+                android:textSize="17sp"
                 android:typeface="serif"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/uploadtext"/>
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:id="@+id/uploadPicChoice"
-                android:background="@color/white"
                 android:layout_marginBottom="10dp">
 
                 <RadioButton
@@ -92,13 +106,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/yesP"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"/>
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/noP"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"/>
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/white"/>
             </RadioGroup>
 
         <RelativeLayout
@@ -132,8 +148,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textColor="@color/uploadtext"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:typeface="serif"
                 android:text="Description:"
@@ -141,7 +157,7 @@
                 android:layout_marginTop="15dp"/>
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
                 android:hint="@string/cDescript"
                 android:layout_marginTop="5dp"
                 android:padding="5dp"

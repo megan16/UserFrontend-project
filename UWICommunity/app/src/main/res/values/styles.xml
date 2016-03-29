@@ -41,4 +41,17 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!--Dropdown list -->
+    <style name="mySpinnerStyle" parent="android:Widget.ListView.DropDown">
+        <item name="android:divider">@color/dark_gray</item>
+        <item name="android:dividerHeight">1.25dp</item>
+        <item name="android:listSelector">@color/uploadtext</item>
+    </style>
+
+    <style name="appThemeDropList" parent="@android:style/Theme.Holo.Light">
+        <item name="android:dropDownListViewStyle">@style/mySpinnerStyle</item>
+
+    </style>
+
+
 </resources>

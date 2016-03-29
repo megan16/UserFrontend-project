@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ImageReader;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,11 +21,15 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,11 +45,14 @@ import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +71,8 @@ public class UploadCrime extends AppCompatActivity {
     private String fileURI=null;
     private final int CAMERA_CAPTURE_REQUEST_CODE=100;
     private final int GALLERY_REQUEST_CODE=200;
-    private static Bitmap photo=null;
+    private int cameraOrGalleryFlag;
+    private Bitmap photo=null;
 
     private EditText desc;
 
@@ -78,6 +87,7 @@ public class UploadCrime extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         crimeTypeList= (Spinner) findViewById(R.id.crimeCategory);
+
         locList= (Spinner)findViewById(R.id.crimeLoc);
         addLocationToSpinner(); // add location stored in database to dropdown list
         addCrimeTypesToSpinner(); //adds the categories of crimes to a list for a user to choice from
@@ -86,7 +96,7 @@ public class UploadCrime extends AppCompatActivity {
         imageChoiceRadioGroup= (RadioGroup) findViewById(R.id.uploadPicChoice); //get radio group
         pictureUpload= (ImageView) findViewById(R.id.picture);
         pictureUpload.setImageResource(0);// clear any possible previous resource
-        photo=null; //clear any possible content to avoid writing duplicate pictures as it's global
+        //photo=null; //clear any possible content to avoid writing duplicate pictures as it's global
         pictureUpload.setImageResource(R.drawable.user1); //set up default picture
         uploadButton= (FloatingActionButton) findViewById(R.id.uploadPicButton);
 
@@ -106,52 +116,6 @@ public class UploadCrime extends AppCompatActivity {
 
     }
 
-    public void webService(RequestParams params){
-
-        AsyncHttpClient client= new AsyncHttpClient();
-
-        //client.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        client.post(getApplicationContext(),URL, params,new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d("MEG", "Success Status Code " + statusCode);
-                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT).show();
-                try {
-                    String response=new String(responseBody,"UTF-8");
-                    Log.d("MEG", "Success Status Code " +response);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                // go to homepage
-                //  Intent intent= new Intent(getApplicationContext(),HomeActivity.class);
-                //startActivity(intent);
-                closeActivity();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                String response= null;
-                try {
-                    response = new String(responseBody,"UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(getApplicationContext(),""+statusCode+".."+response,Toast.LENGTH_SHORT).show();
-                Log.d("MEG", "Failure Status Code " + statusCode+".."+response);
-
-                if(statusCode==500){
-                    Toast.makeText(getApplicationContext(),"Ensure that ID doesnt already exist",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
-    }
-
-
-
-
-
     private void uploadPicker(){
         final AlertDialog picker= new AlertDialog.Builder(this).create();
         LayoutInflater factory= LayoutInflater.from(UploadCrime.this);
@@ -165,22 +129,33 @@ public class UploadCrime extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("MEG", "Clicked camera button");
                 picker.dismiss();
+                cameraOrGalleryFlag = 1; //camera choosen
                 uploadImage(1);// do camera
             }
         });
         imgbtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("MEG","Clicked gallery button");
+                Log.d("MEG", "Clicked gallery button");
                 picker.dismiss();
+                cameraOrGalleryFlag = 2;// gallery choosen
                 uploadImage(2);// do gallery
                 uploadButton.setVisibility(View.VISIBLE);
             }
         });
 
         picker.setView(view);
-        picker.setCancelable(true);
         picker.show();
+        picker.setCanceledOnTouchOutside(true);
+//        picker.setCancelable(true);
+        //resize and reposition upload picker
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(picker.getWindow().getAttributes());
+        lp.width = 350;
+        lp.height =ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.x=175;
+        lp.y=100;
+        picker.getWindow().setAttributes(lp);
 
     }
 
@@ -189,6 +164,7 @@ public class UploadCrime extends AppCompatActivity {
         if(choice==1){
             //choose to take pic with camera
             // check if camera exist on device 1st
+
             if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
                 // has a camera
                 Intent cameraIntent= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -221,7 +197,7 @@ public class UploadCrime extends AppCompatActivity {
         }
         //TODO: only save file when click done
         //using time stamp to distinguish b/w multiple perps when storing on device
-        String timeStamp= new SimpleDateFormat("yyyymmdd_hhmmss",Locale.getDefault()).format(new Date());
+        String timeStamp= new SimpleDateFormat("yyyymmdd_hhmm",Locale.getDefault()).format(new Date());
         File mediaFile=new File(pictureDir.getPath()+File.separator+"Perp_"+timeStamp+".jpg");
        // Log.d("MEG","Dir: "+mediaFile.getAbsolutePath());
 
@@ -235,7 +211,6 @@ public class UploadCrime extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
-
         if(requestCode== CAMERA_CAPTURE_REQUEST_CODE){
             if(resultCode== RESULT_OK){
             //success save image and add to image view
@@ -257,7 +232,7 @@ public class UploadCrime extends AppCompatActivity {
             }
 
         }else if(requestCode==GALLERY_REQUEST_CODE) {
-                //TODO: meh fab disappearing when gallery is done!!!
+
            if(resultCode==RESULT_OK) {
                Uri uri= data.getData();
                String [] filePathColumn= {MediaStore.Images.Media.DATA};
@@ -267,16 +242,27 @@ public class UploadCrime extends AppCompatActivity {
                }
 
                int columnIndex= cursor != null ? cursor.getColumnIndex(filePathColumn[0]) : 0;
+               assert cursor != null;
                String picturePath=cursor.getString(columnIndex);
                cursor.close();
                pictureUpload.setImageResource(0);// removes the default picture
                //TODO: need to handle for big images
-               pictureUpload.setImageBitmap(BitmapFactory.decodeFile(picturePath));// set picture in the image view
+               BitmapFactory.Options options=new BitmapFactory.Options();
+               options.inSampleSize=8;
 
-
+                 //  options.inPreferredConfig=Bitmap.Config.ARGB_8888;
+//               try {
+//                   photo =MediaStore.Images.Media.getBitmap(this.getContentResolver(),uri);
+//               } catch (IOException e) {
+//                   e.printStackTrace();
+//               }
+               photo=BitmapFactory.decodeFile(picturePath,options);
+               pictureUpload.setImageBitmap(photo);// set picture in the image view
+               //photo=temp;
 
            }else if(resultCode== RESULT_CANCELED){
                Toast.makeText(getApplicationContext(),"No picture was selected",Toast.LENGTH_SHORT).show();
+               photo=null;
            }else{
                Toast.makeText(getApplicationContext(),"Sorry failed to retrieve photo",
                        Toast.LENGTH_SHORT).show();
@@ -288,16 +274,40 @@ public class UploadCrime extends AppCompatActivity {
     }
 
 
+
+    private String prepareImageToSend(Bitmap photo) {
+        ByteArrayOutputStream baos= new ByteArrayOutputStream();
+        byte[] byteArray = null;
+        String imageDataString = null;
+        Log.d("MEG","In prepareImagetoSend");
+
+        if(photo!=null){
+//            int size=photo.getByteCount();
+//            ByteBuffer bb= ByteBuffer.allocate(size);
+//
+//            photo.copyPixelsToBuffer(bb);
+//            byteArray=bb.array();
+//            imageDataString=Base64.encodeToString(byteArray,Base64.DEFAULT);
+            Log.d("MEG"," photo is not null");
+            photo.compress(Bitmap.CompressFormat.JPEG,80,baos);
+            imageDataString=Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
+            Log.d("MEG","String: "+imageDataString);
+        }
+
+
+        return imageDataString;
+    }
+
+
     private void saveImageToFolderStorage(Bitmap bmp){
         File file=getMediaFile();
         try {
             FileOutputStream fos=new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG,90,fos);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 
             fos.flush();
             fos.close();
             //purge image view
-            photo=null; // clean global bitmap to avoid accidental dups
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -349,7 +359,7 @@ public class UploadCrime extends AppCompatActivity {
         list.add("Motor Theft");
         list.add("Robbery");
         list.add("Rape");
-        list.add("Peeping Toms");
+        list.add("Peeping Tom");
         list.add("Assault");
         list.add("Motor Vandalism");
         list.add("Kidnapping");
@@ -362,6 +372,8 @@ public class UploadCrime extends AppCompatActivity {
                 android.R.layout.simple_spinner_item,list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         crimeTypeList.setAdapter(adapter);
+        
+
 
     }
 
@@ -371,11 +383,56 @@ public class UploadCrime extends AppCompatActivity {
         list.add("Select Location");
         list.add("Bus Route- North Gate (Yvettes)");
         list.add("South Gate- Gate Boys");
+
         ArrayAdapter<String> adapter= new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item,list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locList.setAdapter(adapter);
 
+    }
+
+
+
+    public void webService(RequestParams params){
+
+        AsyncHttpClient client= new AsyncHttpClient();
+
+        //client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        client.post(getApplicationContext(), URL, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d("MEG", "Success Status Code " + statusCode);
+                Toast.makeText(getApplicationContext(), "Success, Report was submitted", Toast.LENGTH_SHORT).show();
+                try {
+                    String response = new String(responseBody, "UTF-8");
+                    Log.d("MEG", "Success Status Code " + response);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                // go to homepage
+                //  Intent intent= new Intent(getApplicationContext(),HomeActivity.class);
+                //startActivity(intent);
+                closeActivity();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                String response = null;
+                try {
+                    response = new String(responseBody, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getApplicationContext(), "" + statusCode + ".." + response, Toast.LENGTH_SHORT).show();
+                Log.d("MEG", "Failure Status Code " + statusCode + ".." + response);
+
+                if (statusCode == 500) {
+                    Toast.makeText(getApplicationContext(), "Oops something went wrong at our end", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
     }
 
 
@@ -397,13 +454,11 @@ public class UploadCrime extends AppCompatActivity {
         }else {
 
             //else all values should be valid
-            RequestParams reqParams = new RequestParams();
+            final RequestParams reqParams = new RequestParams();
             reqParams.put("category", crimeTypeList.getSelectedItem().toString());
             reqParams.put("desc", desc.getText().toString());
             reqParams.put("loc", locList.getSelectedItem().toString());
-            reqParams.put("picture", getMediaFile().toString());
-            //TODO: add location
-            webService(reqParams);
+
 
             final AlertDialog.Builder alert = new AlertDialog.Builder(UploadCrime.this);
             alert.setMessage(R.string.verifySubmit);
@@ -414,8 +469,29 @@ public class UploadCrime extends AppCompatActivity {
                     // perform web services
                     // save the image
                     //send kill activity and go home
-                    if (photo != null)
-                        saveImageToFolderStorage(photo);
+                    if (photo != null) {
+
+                        if (cameraOrGalleryFlag == 1)
+                            saveImageToFolderStorage(photo); //save image to directory as it's a live capture
+                        Log.d("MEG", "Flag:" + cameraOrGalleryFlag);
+                        String val = prepareImageToSend(photo);
+                        Log.d("MEG", "PHoto:" + val);
+                        reqParams.put("picture", val);
+                        photo = null; // clean global bitmap to avoid accidental dups
+                        //photo = null;//reset
+                    } else {
+                        //default pic
+                        Bitmap def = BitmapFactory.decodeResource(getResources(), R.drawable.user1);
+                        if (def != null) {
+                            String val = prepareImageToSend(def);// to avoid retrieval of image returning null exceptions
+                            // Log.d("MEG", "PHoto:" + val);
+                            reqParams.put("picture", val);
+                        }
+                    }
+
+                    // Log.d("MEG", "Photo is null");
+                    webService(reqParams);
+                    photo = null;//reset
                     closeActivity();
 
                 }
@@ -437,6 +513,8 @@ public class UploadCrime extends AppCompatActivity {
         }
 
     }
+
+
 
     private void closeActivity(){
         this.finish();

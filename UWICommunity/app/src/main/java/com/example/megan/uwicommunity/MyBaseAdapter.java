@@ -19,25 +19,26 @@ import java.util.ArrayList;
  */
 public class MyBaseAdapter extends android.widget.BaseAdapter {
 
-    private static ArrayList pic,type,loc;
-    private Activity activity;
+    private static ArrayList pic,data;
+    private Context context;
     private static LayoutInflater inflater=null;
     private String path="";
 
 
-    public MyBaseAdapter(Activity a, ArrayList b, ArrayList c,ArrayList d){
-        activity=a;
+    public MyBaseAdapter(Context context, ArrayList b,ArrayList c){
+        this.context=context;
         this.pic=new ArrayList();//b;
-        this.type=c;
-        loc=d;
+        pic=b;
+        data=new ArrayList();
+        data=c;
 
-        inflater = (LayoutInflater) activity
+        inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return type.size();
+        return pic.size();
     }
 
     @Override
@@ -57,20 +58,21 @@ public class MyBaseAdapter extends android.widget.BaseAdapter {
             vi = inflater.inflate(R.layout.crime_reports, null);
 
         ImageView imageView= (ImageView) vi.findViewById(R.id.crImg);
-        File imgFile= new File((String) pic.get(position));
+        File imgFile= (File) pic.get(position);
         if(imgFile.exists()){
 
             imageView.setImageURI(Uri.fromFile(imgFile));
+        }else{
+            imageView.setImageResource(R.drawable.user1);
         }
 
-        TextView type2 = (TextView) vi.findViewById(R.id.crType); // title
+        TextView crimeView = (TextView) vi.findViewById(R.id.crType); // title
+        String crimeType = data.get(position).toString();
+        crimeView.setText(crimeType);
 
-        String crimeType = type.get(position).toString();
-        type2.setText(crimeType);
-
-        TextView loc2= (TextView) vi.findViewById(R.id.crLoc);
-        String location= loc.get(position).toString();
-        loc2.setText(location);
+        TextView locView= (TextView) vi.findViewById(R.id.crLoc);
+        String location= data.get(position).toString();
+        locView.setText(location);
 
         return vi;
     }
