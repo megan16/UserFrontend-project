@@ -11,11 +11,10 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.megan.uwicommunity.HomeActivity"
     tools:showIn="@layout/activity_home"
-    android:background="#212121"
+    android:background="#303030"
     android:orientation="vertical">
 
     <!--android:background="#212121"-->
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,24 +24,33 @@
         android:textSize="16sp"
         android:background="@drawable/quick_button"
         android:textColor="@color/white"
-        android:id="@+id/quickReportBtn"/>
+        android:id="@+id/quickReportBtn"
+        android:layout_marginBottom="10dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        >
+        android:paddingRight="10dp">
 
-             <!--row 1-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <fragment
+                android:id="@+id/map"
+                class="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <!--row 1-->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:columnCount="2">
-
 
                 <!--image layout buttons go here -->
 
@@ -51,7 +59,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/safetyButton"
                     android:src="@drawable/safety"
-                    android:onClick="navToSafety"
                     android:contentDescription="@string/imagebutton1desc"
                     android:layout_gravity="left"
                     android:background="#212121"
@@ -91,6 +98,9 @@
                     android:layout_marginTop="50dp"/>
 
             </GridLayout>
+
+
+        </LinearLayout>
 
     </ScrollView>
 
