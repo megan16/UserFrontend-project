@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Megan on 24/03/2016.
@@ -29,7 +30,7 @@ public class MyBaseAdapter extends android.widget.BaseAdapter {
         this.context=context;
         this.pic=new ArrayList();//b;
         pic=b;
-        data=new ArrayList();
+        //data=new ArrayList();
         data=c;
 
         inflater = (LayoutInflater) context
@@ -62,16 +63,20 @@ public class MyBaseAdapter extends android.widget.BaseAdapter {
         if(imgFile.exists()){
 
             imageView.setImageURI(Uri.fromFile(imgFile));
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
         }else{
             imageView.setImageResource(R.drawable.user1);
         }
 
         TextView crimeView = (TextView) vi.findViewById(R.id.crType); // title
-        String crimeType = data.get(position).toString();
-        crimeView.setText(crimeType);
+        HashMap map;
+
+        map =(HashMap)data.get(position) ;
+        crimeView.setText(map.get("type").toString());
 
         TextView locView= (TextView) vi.findViewById(R.id.crLoc);
-        String location= data.get(position).toString();
+        String location= map.get("loc").toString();
         locView.setText(location);
 
         return vi;

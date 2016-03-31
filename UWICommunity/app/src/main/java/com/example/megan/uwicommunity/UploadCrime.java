@@ -59,7 +59,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-//TODO: check all fields on submission
+
 public class UploadCrime extends AppCompatActivity {
     private static final String URL ="https://projectcomp3990.herokuapp.com/addCrime" ;
     private Spinner locList;
@@ -195,7 +195,7 @@ public class UploadCrime extends AppCompatActivity {
                 Log.d("MEG","Failed to create directory: "+pictureDir.getPath());
             }
         }
-        //TODO: only save file when click done
+
         //using time stamp to distinguish b/w multiple perps when storing on device
         String timeStamp= new SimpleDateFormat("yyyymmdd_hhmm",Locale.getDefault()).format(new Date());
         File mediaFile=new File(pictureDir.getPath()+File.separator+"Perp_"+timeStamp+".jpg");
@@ -218,6 +218,7 @@ public class UploadCrime extends AppCompatActivity {
                 pictureUpload.setImageResource(0);
                // pictureUpload.setImageBitmap(null);// removes the default picture
                 pictureUpload.setImageBitmap(photo);// set picture in the image view
+                pictureUpload.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
             }
@@ -246,18 +247,13 @@ public class UploadCrime extends AppCompatActivity {
                String picturePath=cursor.getString(columnIndex);
                cursor.close();
                pictureUpload.setImageResource(0);// removes the default picture
-               //TODO: need to handle for big images
+
                BitmapFactory.Options options=new BitmapFactory.Options();
                options.inSampleSize=8;
 
-                 //  options.inPreferredConfig=Bitmap.Config.ARGB_8888;
-//               try {
-//                   photo =MediaStore.Images.Media.getBitmap(this.getContentResolver(),uri);
-//               } catch (IOException e) {
-//                   e.printStackTrace();
-//               }
                photo=BitmapFactory.decodeFile(picturePath,options);
                pictureUpload.setImageBitmap(photo);// set picture in the image view
+               pictureUpload.setScaleType(ImageView.ScaleType.FIT_XY);
                //photo=temp;
 
            }else if(resultCode== RESULT_CANCELED){
