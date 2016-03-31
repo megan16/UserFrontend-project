@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 public class QuickReport extends AppCompatActivity {
-//TODO: web services
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

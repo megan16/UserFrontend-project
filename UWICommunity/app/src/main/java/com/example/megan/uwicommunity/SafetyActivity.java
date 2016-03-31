@@ -35,7 +35,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,11 +45,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SafetyActivity extends AppCompatActivity
@@ -72,7 +68,6 @@ public class SafetyActivity extends AppCompatActivity
     private String location=null;
     private ArrayList <HashMap<String,String>> reportList;
     private ArrayList<File> picturesList;
-    private String TAG="MEG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +75,6 @@ public class SafetyActivity extends AppCompatActivity
         setContentView(R.layout.activity_safety);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        list= (ListView) findViewById(R.id.listCrimeReports);
-        reportList= new ArrayList<HashMap<String,String>>();
-        picturesList= new ArrayList<File>();
-
-        webService();
 
        // list= (ListView) findViewById(R.id.listCrimeReports);
 
@@ -113,64 +103,12 @@ public class SafetyActivity extends AppCompatActivity
             }
         });
 
+        list= (ListView) findViewById(R.id.listCrimeReports);
+        reportList= new ArrayList<HashMap<String,String>>();
+        picturesList= new ArrayList<File>();
 
+        webService();
     }
-
-    /* ================================ Web Socket ====================================== */
-     private void connectWebSocket(){
-//         URI uri;
-//         try {
-//             uri= new URI("https://projectcomp3990.herokuapp.com/crimeReports");
-//         } catch (URISyntaxException e) {
-//             e.printStackTrace();
-//             return;
-//         }
-//         WebSocketFactory factory= new WebSocketFactory();
-//         try {
-//             WebSocket webSocketClient= factory.createSocket(uri,5000); //time out for 5 secs
-//            webSocketClient.connect();
-//
-//         } catch (IOException e) {
-//             e.printStackTrace();
-//             return;
-//         }catch(OpeningHandshakeException e){
-//             StatusLine status= e.getStatusLine();
-//             Log.d(TAG,"Version: "+status.getHttpVersion());
-//             Log.d(TAG,"Vode: "+status.getStatusCode());
-//             Log.d(TAG,"Reason: "+status.getReasonPhrase());
-//
-//             Map<String, List<String>> headers = e.getHeaders();
-//             for (Map.Entry<String, List<String>> entry : headers.entrySet())
-//             {
-//                 // Header name.
-//                 String name = entry.getKey();
-//
-//                 // Values of the header.
-//                 List<String> values = entry.getValue();
-//
-//                 if (values == null || values.size() == 0)
-//                 {
-//                     // Print the name only.
-//                     Log.d(TAG,"Name: "+name);
-//                     continue;
-//                 }
-//
-//                 for (String value : values)
-//                 {
-//                     // Print the name and the value.
-//                     Log.d(TAG, "Value: " + value);
-//                 }
-//             }
-//
-//
-//         } catch (WebSocketException e) {
-//             e.printStackTrace();
-//         }
-
-
-     }
-
-
 
     public void navToUpload(View v){
         Log.d("MEG","I was called");
@@ -179,7 +117,17 @@ public class SafetyActivity extends AppCompatActivity
         //this.finish();
     }
 
-
+    // get updates
+//    @Override
+//    protected void onStart(){
+//        super.onStart();
+//        if(isNetworkAvailable(SafetyActivity.this)){
+//            list.setAdapter(null);
+//            webService();
+//            //add to screen
+//
+//        }
+//    }
 
     @Override
     protected void onResume(){
@@ -194,6 +142,13 @@ public class SafetyActivity extends AppCompatActivity
         }
     }
 
+    public void addToScreen(){
+        LayoutInflater factory= LayoutInflater.from(SafetyActivity.this);
+        final View view=factory.inflate(R.layout.crime_reports, null);
+        ArrayAdapter listAdapter=new ArrayAdapter<String>(this,R.layout.crime_reports);
+        ListView listView= (ListView) findViewById(R.id.tipsList);
+        listView.setAdapter(listAdapter);
+    }
 
     public void webService() {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -288,14 +243,6 @@ public class SafetyActivity extends AppCompatActivity
 
             }
 
-            //TODO: Put inside of quick Report inside of sending and checking N/A
-            // when a quick report is made there is long and lat cords
-            if(location.equalsIgnoreCase("n/a")){
-                Intent intent= getIntent();
-                new GetAddress(SafetyActivity.this).execute(intent.getStringExtra("latitude"),
-                        intent.getStringExtra("longitude"));
-            }
-
             reportsMap=new HashMap<String,String>();
         //    reportsMap.put("desc",description);
             reportsMap.put("loc", location);
@@ -388,9 +335,6 @@ public class SafetyActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_escort) {
             Intent intent = new Intent(this,EscortActivity.class);
-            Intent safetyIntent=getIntent();
-            intent.putExtra("latitude",safetyIntent.getStringExtra("latitude"));
-            intent.putExtra("longitude",safetyIntent.getStringExtra("longitude"));
             startActivity(intent);
             //finish();
 

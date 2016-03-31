@@ -26,14 +26,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-//TODO: Implement location using external class
+
 
 public class HomeActivity extends AppCompatActivity implements LocationListener {
     private static final int REQUEST_CODE_LOCATION = 2;
@@ -45,12 +43,12 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     private ImageButton activitiesBtn;
     private GPSTracker gps;
     private LocationManager locationManager;
-    private Location location;
     private String provider;
 
-    private GoogleMap map;
-    private Marker marker=null;
-
+//    private GoogleMap map;
+//    private GoogleApiClient googleApiClient;
+//    private LocationRequest locationRequest;
+//    private Location lastLocation;
 
 
     @Override
@@ -61,27 +59,28 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         setSupportActionBar(toolbar);
 
         ActionBar actionbar = getSupportActionBar();
-        if(actionbar!=null){
-            actionbar.setDisplayShowHomeEnabled(true);
-            actionbar.setIcon(R.mipmap.ic_uwi);
-            actionbar.setTitle("STA Connected");
-        }
+        actionbar.setDisplayShowHomeEnabled(true);
+        actionbar.setIcon(R.mipmap.ic_uwi);
+        actionbar.setTitle("STA Connected");
 
         reportBtn = (Button) findViewById(R.id.quickReportBtn);
         safetyBtn = (ImageButton) findViewById(R.id.safetyButton);
-        eventsBtn = (ImageButton) findViewById(R.id.eventsBtn);
-        tradeBtn = (ImageButton) findViewById(R.id.tradesBtn);
-        activitiesBtn = (ImageButton) findViewById(R.id.activities);
+        eventsBtn= (ImageButton) findViewById(R.id.eventsBtn);
+        tradeBtn= (ImageButton) findViewById(R.id.tradesBtn);
+        activitiesBtn= (ImageButton) findViewById(R.id.activities);
         /* ################################ MAP #################################### */
         getLatLng();
-       // replaceMap();
 
         //go to quick report listener
         navToQuickReport();
-        navToSafety();
         navToEvents();
         navToTrade();
         navToActivities();
+
+
+
+
+
     }
 
 
@@ -115,20 +114,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    public void navToSafety(){
-        safetyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SafetyActivity.class);
-                if(location!=null){
-                    intent.putExtra("longitude",String.valueOf(location.getLongitude()));
-                    intent.putExtra("latitude",String.valueOf(location.getLatitude()));
-                }
-                startActivity(intent);
-            }
-        });
-    }
-
     public void navToQuickReport(){
         reportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,14 +125,17 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+    public void navToSafety(View view){
+        Intent intent = new Intent(this, SafetyActivity.class);
+        startActivity(intent);
+        //finish();
+    }
 
 
-    /* ##################################### MAP FUNCTIONS ################################### */
 
     /* ######################### LOCATION FUNCTIONS ################################## */
 
     private void getLatLng(){
-
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
@@ -159,26 +147,13 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-           // Location location = locationManager.getLastKnownLocation(provider);
+            Location location = locationManager.getLastKnownLocation(provider);
             return;
         }
-        location = locationManager.getLastKnownLocation(provider);
+        Location location = locationManager.getLastKnownLocation(provider);
         if(location!=null){
             Log.d("MEG","Provider: "+provider);
-            //set up map
-            map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            //make map zoomable
-            map.getUiSettings().setZoomGesturesEnabled(true);
-            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                //TODO:
-                return;
-            }
-            map.setMyLocationEnabled(true);
-
-            //call on change of location
             onLocationChanged(location);
-
         }
         else{
             Toast.makeText(getApplicationContext(),"Location not available",Toast.LENGTH_LONG).show();
@@ -219,21 +194,14 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location!=null){
-            double lat = (double) (location.getLatitude());
-            double longit = (double) (location.getLongitude());
-            //  latituteField.setText(String.valueOf(lat));
-            //longitudeField.setText(String.valueOf(lng));
-            LatLng loc= new LatLng(location.getLatitude(),location.getLongitude());
-            if(marker!=null)
-                marker.remove();
-            marker= map.addMarker(new MarkerOptions().position(loc));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-            Toast.makeText(getApplicationContext(),"Long: "+longit+" Lat: "+lat,Toast.LENGTH_LONG).show();
+        double lat = (double) (location.getLatitude());
+        double longit = (double) (location.getLongitude());
+      //  latituteField.setText(String.valueOf(lat));
+        //longitudeField.setText(String.valueOf(lng));
+
 
             Log.d("MEG", "$Co-ord: " + longit + " " + lat);
-            // Toast.makeText(getApplicationContext(),"longit: "+longit+"lat: "+lat,Toast.LENGTH_LONG).show();
-        }
+       // Toast.makeText(getApplicationContext(),"longit: "+longit+"lat: "+lat,Toast.LENGTH_LONG).show();
     }
 
     @Override

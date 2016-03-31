@@ -2,17 +2,13 @@ package com.example.megan.uwicommunity;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.media.audiofx.BassBoost;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +16,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -30,19 +25,16 @@ import java.util.concurrent.TimeUnit;
 import static com.example.megan.uwicommunity.R.drawable.alarmbutton2;
 import static com.example.megan.uwicommunity.R.id.alarmButton;
 
-public class EscortActivity extends AppCompatActivity implements GPSActivity {
+public class EscortActivity extends AppCompatActivity  {
 
-    private static final String URL ="https://projectcomp3990.herokuapp.com/findBuddy";
     private static final String format = "%02d:%02d";
     private CountDownTimer cdt;
     private boolean flagTimer;
     private boolean finished;
     private int countTaps = 0;
-    GPSTracker gps;
-    private Button escortBtn;
+
     private Button wb;
     private AlertDialog walkBuddyDialog;
-    //TODO: Web Services
 
 
     @Override
@@ -53,8 +45,6 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
         setSupportActionBar(toolbar);
         flagTimer=false;
         finished=false;
-
-        gps= new GPSTracker(this,EscortActivity.this);
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -67,87 +57,50 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
 
         wb= (Button) findViewById(R.id.walkBud);
         walkBudListener();  // call button onclick listener function
-        escortBtn= (Button) findViewById(R.id.alarmButton);
-
+        final Button alertBtn= (Button) findViewById(R.id.alarmButton);
         // on touch listener
-
-        escortBtn.setOnTouchListener(new View.OnTouchListener() {
+        alertBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    countTaps++;
-                    if(flagTimer){
-                        cdt.cancel();
-                        flagTimer=false;
-                        //user pressed button down again
-                    }
-                    if(countTaps==1){
-                        setHelpButtonsVisible(); // to avoid multiple redraws to screen
-                    }else{
-                        escortBtn.setText(null);
-                    }
-                    return true;
-                }
-                else
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    startTimer(v,escortBtn);
-                    return  false;
-                }
-
-
-
-               return false;
+            public void onClick(View v) {
+                setTimer(v);
             }
         });
 
-
-
-
     }
 
-    /* ######################### SETTING UP LOCATION DATA #################### */
-    @Override
-    public void locationChanged(double longitude, double latitude) {
-        Toast.makeText(getApplicationContext(),"Long: "+longitude+" Lat: "+latitude,
-                Toast.LENGTH_LONG).show();
-        Log.d("MEG","Loc Changed "+"Long: "+longitude+" Lat: "+latitude);
-    }
-
-    @Override
-    public void displayGPSDialog() {
-        Intent intent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(intent);
-    }
-
-    @Override
-    protected void onResume(){
-        Log.d("MEG","ON resume called");
-        if(!gps.isRunning()){
-            gps.resumeGetLocation();
-        }
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop(){
-        gps.stopGPS();
-        super.onStop();
-    }
-
-
-    public void setHelpButtonsVisible(){
+    public void setTimer(View view) {
+        final Button button = ((Button) findViewById(alarmButton));
         Button abort= (Button)findViewById(R.id.abort);
         Button panic= (Button) findViewById(R.id.panic);
+        //final boolean finished=false;
 
+        /* TODO:
+            *Make button rotate
+            Change button into progress bar circular
+            put text in text view
+         */
+
+//        Animation rotateCenter = AnimationUtils.loadAnimation(this, R.anim.rotate_center);
+//        button.startAnimation(rotateCenter);
         abort.setVisibility(View.VISIBLE);
         panic.setVisibility(View.VISIBLE);
+        countTaps++;
+
+        if(countTaps<=1) {
+
+            startTimer(view,button);
+        }
+
+        //}// else reset to extend time or reset time
+        cdt.cancel(); //cancel any possible existing timer
+        startTimer(view, button); // restart a new timer
+        //return;
     }
 
     public void startTimer(View view, final Button button){
         /////final Button button = ((Button) findViewById(alarmButton));
         flagTimer=true; //flag to cancel timer incase user accidentally starts button
-        cdt = new CountDownTimer(10000, 1000) {
+        cdt = new CountDownTimer(120000, 1000) {
 
             public void onTick(long milliToFini) {
                 button.setText("" + String.format(format, TimeUnit.MILLISECONDS.toMinutes(milliToFini),
@@ -155,7 +108,7 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
                 ));
 
 
-                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50);
 
             }
 
@@ -225,7 +178,7 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
                 Toast.makeText(getApplicationContext(), "No functionality yet", Toast.LENGTH_SHORT).show();
                 //set up alerts
                 setUpBudDialog();
-                // walkBuddyDialog.show();
+               // walkBuddyDialog.show();
 
             }
         });
@@ -326,7 +279,6 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
 
        // return super.onOptionsItemSelected(item);
     }
-
 
 
 }

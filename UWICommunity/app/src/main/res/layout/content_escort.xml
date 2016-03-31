@@ -30,7 +30,7 @@
             android:id="@+id/textView"
             android:textAlignment="gravity"
             android:textColor="#000000"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="10dp"
             android:paddingLeft="10dp"
             android:typeface="serif"
             android:padding="5dp"
@@ -42,11 +42,13 @@
         <!-- Push to start Button alarm btn -->
 
         <Button
-            android:layout_width="175dp"
-            android:layout_height="200dp"
-            android:text="@string/escortBtnTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Push to Start "
             android:id="@+id/alarmButton"
-            android:background="@drawable/fingerprint"
+            android:width="150dp"
+            android:height="150dp"
+            android:background="@drawable/alarm_button1"
             android:textColor="#000000"
             android:textStyle="bold"
             android:typeface="serif"
@@ -76,7 +78,7 @@
             android:typeface="serif"
             android:textSize="15dp"
             android:padding="5dp"
-            android:textStyle="bold"
+            android:textStyle="bold|italic"
             android:textColor="@color/white"
             android:onClick="panicFunction"
             android:visibility="invisible"/>
@@ -101,7 +103,7 @@
             android:typeface="serif"
             android:textSize="15dp"
             android:padding="5dp"
-            android:textStyle="bold"
+            android:textStyle="bold|italic"
             android:textColor="@color/white"
             android:visibility="invisible" />
 
