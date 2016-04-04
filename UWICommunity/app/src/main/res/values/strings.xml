@@ -42,4 +42,24 @@
     <string name="cDescript">Enter a short description on any additional information you may have.\n\n(Max:200)</string>
     <string name="title_activity_maps">Map</string>
     <string name="escortBtnTxt">Place\nThumb\nHere</string>
+    <string name="addpic">Add Picture</string>
+    <string name="addvid">Add Video</string>
+    <string name="addaudio">Add Audio</string>
+    <string name="oldpass">Old Password:</string>
+    <string name="enteroldpass">Enter Old Password</string>
+    <string name="newpass">New Password:</string>
+    <string name="enternewpass">Enter New Password</string>
+    <string name="reset">Reset</string>
+    <string name="passStrength">Password Strength:</string>
+    <string name="notEntered">Not Entered</string>
+    <string name="easy">EASY</string>
+    <string name="medium">MEDIUM</string>
+    <string name="strong">STRONG</string>
+    <string name="changepass">Change Password?</string>
+    <string name="maxlength_strong">STRONG|Max Length</string>
+    <string name="maxlength_med">MEDIUM|Max Length</string>
+    <string name="maxlength">Max Length</string>
+    <string name="alerting_police">Alerting\nCampus\nPolice</string>
+    <string name="title_activity_medical_contact">MedicalContact</string>
+    <string name="title_activity_events">EventsActivity</string>
 </resources>

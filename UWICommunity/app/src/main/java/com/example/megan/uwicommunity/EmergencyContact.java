@@ -39,7 +39,7 @@ public class EmergencyContact extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                String phoneNo = "tel:6408650";
+                String phoneNo = "tel:6622002,83510";
 
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(phoneNo));
                 startActivity(intent);
@@ -52,7 +52,7 @@ public class EmergencyContact extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                String phoneNo = "tel:7317291";
+                String phoneNo = "tel:663-1264";
 
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(phoneNo));
                 startActivity(intent);

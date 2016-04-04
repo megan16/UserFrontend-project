@@ -9,10 +9,11 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- end of my permissions -->
     <application
@@ -21,14 +22,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBeULVa0TQ1mLPksD-fzdJPLxYfpuXDyrg" />
-
 
         <activity
             android:name=".HomeActivity"
@@ -49,7 +48,7 @@
             android:label="@string/title_activity_tips"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-           android:name=".EmergencyContact"
+            android:name=".EmergencyContact"
             android:label="@string/title_activity_emergency_contact"
             android:parentActivityName=".SafetyActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -68,13 +67,25 @@
         <activity
             android:name=".UploadCrime"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".QuickReport" />
+        <activity
+            android:name=".QuickReport"
+            android:windowSoftInputMode="stateHidden" />
 
+        <receiver android:name=".ButtonReceiver">
+            <intent-filter>
+                <action android:name="com.example.megan.uwicommunity.ButtonReceiver" />
+            </intent-filter>
+        </receiver>
 
-
-
-
-
+        <activity android:name=".ChangePassword" />
+        <activity
+            android:name=".MedicalContact"
+            android:label="@string/title_activity_medical_contact"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventsActivity"
+            android:label="@string/title_activity_events"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -9,8 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.megan.uwicommunity.EmergencyContact"
-    tools:showIn="@layout/activity_emergency_contact">
+    tools:context="com.example.megan.uwicommunity.MedicalContact"
+    tools:showIn="@layout/activity_medical_contact">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,18 +30,16 @@
                 android:layout_gravity="center|top"
                 android:textAlignment="center"
                 android:padding="30dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:typeface="serif" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Campus Police"
-
-                android:layout_marginTop="40dp"
+                android:text="Health Service Unit"
                 android:layout_marginBottom="5dp"
-                android:id="@+id/campusPolice"
+                android:id="@+id/medContact"
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold|italic"
@@ -52,26 +50,79 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=" 6622002"
-                android:textAlignment="gravity"
-                android:id="@+id/callbutton1"
+                android:text="6622002\nExt:82149"
+                android:textAlignment="center"
+                android:padding="5dp"
+                android:id="@+id/medcallbutton1"
                 android:drawableLeft="@drawable/ic_call_green"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:width="150dp"
                 android:layout_gravity="center"
                 android:background="@drawable/call_button"
                 android:clickable="true"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HSU Counsellor"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/medCounsellorlabel"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold|italic"
+                android:typeface="serif"
+                android:textColor="#000000"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="6622002\nExt:82151"
+                android:textAlignment="center"
+                android:id="@+id/medcallcounsellor"
+                android:drawableLeft="@drawable/ic_call_green"
+                android:padding="5dp"
+                android:width="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/call_button"
+                android:clickable="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="St. Joseph Police"
-                android:layout_marginTop="55dp"
+                android:text="Pharmacy"
                 android:layout_marginBottom="5dp"
-                android:id="@+id/natPolice"
+                android:id="@+id/medpharm"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold|italic"
+                android:typeface="serif"
+                android:textColor="#000000"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="6622002\nExt:82150"
+                android:textAlignment="gravity"
+                android:id="@+id/medcallpharm"
+                android:drawableLeft="@drawable/ic_call_green"
+                android:padding="5dp"
+                android:width="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/call_button"
+                android:clickable="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="St. Augustine Hospital"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/natHos"
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold|italic"
@@ -84,17 +135,13 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="6631264"
                 android:textAlignment="gravity"
-                android:id="@+id/callbutton2"
+                android:id="@+id/medcallbutton2"
                 android:drawableLeft="@drawable/ic_call_green"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:padding="5dp"
                 android:width="150dp"
                 android:layout_gravity="center"
                 android:background="@drawable/call_button"
                 android:clickable="true" />
-
-
-
 
         </LinearLayout>
     </ScrollView>

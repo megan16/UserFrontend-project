@@ -216,7 +216,6 @@ public class UploadCrime extends AppCompatActivity {
             //success save image and add to image view
                 photo= (Bitmap) data.getExtras().get("data");
                 pictureUpload.setImageResource(0);
-               // pictureUpload.setImageBitmap(null);// removes the default picture
                 pictureUpload.setImageBitmap(photo);// set picture in the image view
                 pictureUpload.setScaleType(ImageView.ScaleType.FIT_XY);
 
@@ -263,8 +262,6 @@ public class UploadCrime extends AppCompatActivity {
                Toast.makeText(getApplicationContext(),"Sorry failed to retrieve photo",
                        Toast.LENGTH_SHORT).show();
            }
-
-                //TODO: Gallery does not write to our folder as it already exist & no need to duplicate but can change this if anything
 
         }
     }

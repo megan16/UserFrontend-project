@@ -63,6 +63,7 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
 
 
         //getSupportActionBar().setTitle(null);
+        if(getSupportActionBar()!=null)
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         wb= (Button) findViewById(R.id.walkBud);
@@ -147,25 +148,19 @@ public class EscortActivity extends AppCompatActivity implements GPSActivity {
     public void startTimer(View view, final Button button){
         /////final Button button = ((Button) findViewById(alarmButton));
         flagTimer=true; //flag to cancel timer incase user accidentally starts button
-        cdt = new CountDownTimer(10000, 1000) {
+        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        cdt = new CountDownTimer(3000, 1000) {
 
             public void onTick(long milliToFini) {
-                button.setText("" + String.format(format, TimeUnit.MILLISECONDS.toMinutes(milliToFini),
-                        TimeUnit.MILLISECONDS.toSeconds(milliToFini) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((milliToFini)))
-                ));
-
-
-                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-
+                String text=String.format(format, TimeUnit.MILLISECONDS.toMinutes(milliToFini),
+                        TimeUnit.MILLISECONDS.toSeconds(milliToFini) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((milliToFini))));
+                button.setText(text);
             }
 
             @Override
             public void onFinish() {
-                button.setBackgroundResource(alarmbutton2);
-                button.setText("Alerting Campus Police");
+                button.setText(R.string.alerting_police);
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-
-                //button.setRotation(0f);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

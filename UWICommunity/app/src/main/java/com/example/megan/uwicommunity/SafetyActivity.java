@@ -4,54 +4,46 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
+import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
-
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+
 
 public class SafetyActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,7 +56,7 @@ public class SafetyActivity extends AppCompatActivity
     private String lng;
     private String lat;
     private File pic=null;
-    private MyBaseAdapter adapter;
+    private CrimeBaseAdapter adapter;
     private ListView list;
 
     HashMap<String,String> reportsMap;
@@ -73,9 +65,12 @@ public class SafetyActivity extends AppCompatActivity
     private ArrayList <HashMap<String,String>> reportList;
     private ArrayList<File> picturesList;
     private String TAG="MEG";
+    private Socket mSocket;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        webService();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_safety);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,7 +79,15 @@ public class SafetyActivity extends AppCompatActivity
         reportList= new ArrayList<HashMap<String,String>>();
         picturesList= new ArrayList<File>();
 
-        webService();
+        Intent intent=getIntent();
+        String dataFromHome =intent.getStringExtra("reports");
+        Log.d(TAG, "Home " + dataFromHome);
+
+
+        olderCode();
+        //mSocket.connect();
+        //connectWebSocket();
+        //attemptSend();
 
        // list= (ListView) findViewById(R.id.listCrimeReports);
 
@@ -116,61 +119,113 @@ public class SafetyActivity extends AppCompatActivity
 
     }
 
-    /* ================================ Web Socket ====================================== */
+    private void olderCode() {
+        try {
+             mSocket = IO.socket("https://projectcomp3990.herokuapp.com");
+            mSocket.on("info", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "Received: " );
+                    //mSocket.emit("crimereports");
+                }
+            }).emit("crimereports", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "Received reports: "+args[0]);
+                }
+            });
+
+
+
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* ================================ Web Socket ======================================
      private void connectWebSocket(){
-//         URI uri;
-//         try {
-//             uri= new URI("https://projectcomp3990.herokuapp.com/crimeReports");
-//         } catch (URISyntaxException e) {
-//             e.printStackTrace();
-//             return;
-//         }
-//         WebSocketFactory factory= new WebSocketFactory();
-//         try {
-//             WebSocket webSocketClient= factory.createSocket(uri,5000); //time out for 5 secs
-//            webSocketClient.connect();
-//
-//         } catch (IOException e) {
-//             e.printStackTrace();
-//             return;
-//         }catch(OpeningHandshakeException e){
-//             StatusLine status= e.getStatusLine();
-//             Log.d(TAG,"Version: "+status.getHttpVersion());
-//             Log.d(TAG,"Vode: "+status.getStatusCode());
-//             Log.d(TAG,"Reason: "+status.getReasonPhrase());
-//
-//             Map<String, List<String>> headers = e.getHeaders();
-//             for (Map.Entry<String, List<String>> entry : headers.entrySet())
-//             {
-//                 // Header name.
-//                 String name = entry.getKey();
-//
-//                 // Values of the header.
-//                 List<String> values = entry.getValue();
-//
-//                 if (values == null || values.size() == 0)
-//                 {
-//                     // Print the name only.
-//                     Log.d(TAG,"Name: "+name);
-//                     continue;
+
+         try {
+             Socket socket= IO.socket("https://projectcomp3990.herokuapp.com");
+
+           //  socket.connect();
+//             socket.emit("info", new Emitter.Listener() {
+//                 @Override
+//                 public void call(Object... args) {
+//                     Log.d(TAG, "inside report on");
+//                     Log.d(TAG, "Received: " + args[0]);
 //                 }
+//             });
 //
-//                 for (String value : values)
-//                 {
-//                     // Print the name and the value.
-//                     Log.d(TAG, "Value: " + value);
+//             socket.on("info", new Emitter.Listener() {
+//                 @Override
+//                 public void call(Object... args) {
+//                     Log.d(TAG, "OB: " + args[0]);
 //                 }
-//             }
-//
-//
-//         } catch (WebSocketException e) {
-//             e.printStackTrace();
-//         }
+//             });
+
+             socket.on("crimereports", new Emitter.Listener() {
+                 @Override
+                 public void call(Object... args) {
+                     Log.d(TAG, "inside report on");
+                     Log.d(TAG, "Received: " + args[0]);
+                 }
+             });
+//testing this
+            socket.connected();
+             if(socket.connected()){
+                 Log.d(TAG,"Socket is connected");
+             }else{
+
+                 Log.d(TAG,"Socket is not connected");
+             }
+
+
+         } catch (URISyntaxException e) {
+             e.printStackTrace();
+         }
 
 
      }
 
+    private void attemptSend(){
 
+        Log.d(TAG, "In attempt send");
+        try {
+
+            final Socket socket = IO.socket("https://projectcomp3990.herokuapp.com");
+
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    //socket.emit("info");
+                    Log.d(TAG, "Received: " + args[0]);
+
+
+                }
+            }).on("crimerepots", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "Received: " + args[0]);
+                }
+            }).on("info", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "Received info: " + args[0]);
+                }
+            });
+
+            socket.connect();
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+*/
 
     public void navToUpload(View v){
         Log.d("MEG","I was called");
@@ -183,10 +238,11 @@ public class SafetyActivity extends AppCompatActivity
 
     @Override
     protected void onResume(){
+        webService();
         super.onResume();
         if(isNetworkAvailable(SafetyActivity.this)){
             //list.setAdapter(null);//clean all data
-            //webService();
+
             //add to screen
             if(adapter!=null)
             adapter.notifyDataSetChanged();
@@ -194,52 +250,107 @@ public class SafetyActivity extends AppCompatActivity
         }
     }
 
+    private void webService() {
+        Log.d("MEG", "In web services created my json objects before: " );
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-    public void webService() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams requestParams;
-        Log.d("MEG", "Web services to retrieved called");
-        //client.addHeader("Content-Type", "application/json; charset=utf-8");
-        client.get(this,URL,new JsonHttpResponseHandler() {
-
+        JsonArrayRequest stringRequest = new JsonArrayRequest(URL,new Response.Listener<JSONArray>() {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("MEG", "Success code: " + statusCode);
-                if(statusCode==200){
-                   // String crimeType=response.toString();
-                    Log.d("MEG","Success JsonObject");
-                    list.setAdapter(null);//clean all data
-
-                }
-            }
-
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                //String respArray = response.toString();
-           //     Log.d("MEG", "onSuccess Array: " + respArray.toString());4
+            public void onResponse(JSONArray response) {
                 type=null;
                 desc=null;
                 loc=null;
                 pic=null;
 
                 getReportsFromServer(response);
-
+               // Log.e("MEG", " response from server: " + response.toString());
 
             }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // hide progress dialog
+                        // VolleyLog.d("ME", "Error: " + error.getMessage());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        int sc = 0;
+                        if(networkResponse!=null && networkResponse.data!=null) {
+                            sc = networkResponse.statusCode;
+                        }
 
+                        Log.d("MEG", "Error: " +String.valueOf(sc)+" .. "+ error.getMessage());
+                        //  Toast.makeText(getApplicationContext(), "Error: " + sc, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "" + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+
+                }) {
             @Override
-            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                Toast.makeText(getApplicationContext(), "" + statusCode + ".." + response, Toast.LENGTH_SHORT).show();
-                Log.d("MEG", "Failure Status Code " + statusCode+".."+response);
+            protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                if(response!=null)
+                    Log.d("MEG","Status code= "+response.statusCode);
 
-                if(statusCode==500){
-                    Toast.makeText(getApplicationContext(),"Ensure that ID doesnt already exist",Toast.LENGTH_SHORT).show();
+                if (response.statusCode == 200) {
+                    Log.d("MEG","Success");
+
                 }
+                return super.parseNetworkResponse(response);
             }
-        });
+
+        };
+        queue.add(stringRequest);
+
+
     }
+
+
+
+//    public void webService() {
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams requestParams;
+//        Log.d("MEG", "Web services to retrieved called");
+//        //client.addHeader("Content-Type", "application/json; charset=utf-8");
+//        client.get(this,URL,new JsonHttpResponseHandler() {
+//
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                Log.d("MEG", "Success code: " + statusCode);
+//                if(statusCode==200){
+//                   // String crimeType=response.toString();
+//                    Log.d("MEG","Success JsonObject");
+//                    list.setAdapter(null);//clean all data
+//
+//                }
+//            }
+//
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                //String respArray = response.toString();
+//           //     Log.d("MEG", "onSuccess Array: " + respArray.toString());4
+//                type=null;
+//                desc=null;
+//                loc=null;
+//                pic=null;
+//
+//                getReportsFromServer(response);
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+//                Toast.makeText(getApplicationContext(), "" + statusCode + ".." + response, Toast.LENGTH_SHORT).show();
+//                Log.d("MEG", "Failure Status Code " + statusCode+".."+response);
+//
+//                if(statusCode==500){
+//                    Toast.makeText(getApplicationContext(),"Ensure that ID doesnt already exist",Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 
     private void getReportsFromServer(JSONArray response){
         JSONObject report = null;
@@ -315,7 +426,7 @@ public class SafetyActivity extends AppCompatActivity
 //            Log.i("MEG",entry.getKey()+" : "+entry.getValue());
 //        }
 
-        adapter= new MyBaseAdapter(SafetyActivity.this,picturesList,reportList);
+        adapter= new CrimeBaseAdapter(SafetyActivity.this,picturesList,reportList);
         list.setAdapter(adapter);
 
 
@@ -399,7 +510,8 @@ public class SafetyActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_med) {
-
+            Intent intent = new Intent(this,MedicalContact.class);
+            startActivity(intent);
         }
 
 

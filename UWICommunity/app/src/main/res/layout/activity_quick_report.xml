@@ -11,6 +11,9 @@
     android:orientation="vertical"
     android:background="#303030">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,46 +44,52 @@
             android:layout_marginBottom="30dp"
             android:hint="Type short description here..."/>
 
+     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_edges_button"
+        android:text="@string/addpic"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+         android:id="@+id/addpicbtn"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_edges_button"
+        android:text="@string/addvid"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/addvidbtn"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_edges_button"
+        android:text="@string/addaudio"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/addaudbtn"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="Push\nto\nReport"
+            android:background="@drawable/quick_button"
+            android:padding="7dp"
+            android:textStyle="bold|italic"
+            android:textSize="18sp"
+            android:id="@+id/submitBtn"/>
 
     </LinearLayout>
+    </ScrollView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/round_edges_button"
-        android:text="Add Picture"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/round_edges_button"
-        android:text="Add Video"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/round_edges_button"
-        android:text="Add Audio"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="Push\nto\nReport"
-        android:background="@drawable/quick_button"
-        android:padding="7dp"
-        android:textStyle="bold|italic"
-
-        android:textSize="18sp"
-        />
 
 </LinearLayout>

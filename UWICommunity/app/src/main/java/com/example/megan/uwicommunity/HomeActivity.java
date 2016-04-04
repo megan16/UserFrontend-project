@@ -19,8 +19,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,11 +43,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 //TODO: Implement location using external class
 
 public class HomeActivity extends AppCompatActivity implements LocationListener {
     private static final int REQUEST_CODE_LOCATION = 2;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+    private static final String URL = "https://projectcomp3990.herokuapp.com/crimeReports" ;
+    private JSONArray reports;
+
     private Button reportBtn;
     private ImageButton safetyBtn;
     private ImageButton eventsBtn;
@@ -50,6 +69,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
     private GoogleMap map;
     private Marker marker=null;
+
+    //to move to login screen
+    private TextView changePass;
 
 
 
@@ -67,11 +89,23 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             actionbar.setTitle("STA Connected");
         }
 
+      //  webService();
+        //TODO: to move to login
+        changePass= (TextView) findViewById(R.id.changepass);
+        changePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(getApplicationContext(),ChangePassword.class);
+                startActivity(intent);
+            }
+        });
+
         reportBtn = (Button) findViewById(R.id.quickReportBtn);
         safetyBtn = (ImageButton) findViewById(R.id.safetyButton);
         eventsBtn = (ImageButton) findViewById(R.id.eventsBtn);
         tradeBtn = (ImageButton) findViewById(R.id.tradesBtn);
         activitiesBtn = (ImageButton) findViewById(R.id.activities);
+
         /* ################################ MAP #################################### */
         getLatLng();
        // replaceMap();
@@ -82,6 +116,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         navToEvents();
         navToTrade();
         navToActivities();
+
+
     }
 
 
@@ -120,10 +156,8 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SafetyActivity.class);
-                if(location!=null){
-                    intent.putExtra("longitude",String.valueOf(location.getLongitude()));
-                    intent.putExtra("latitude",String.valueOf(location.getLatitude()));
-                }
+                if(reports!=null)
+                intent.putExtra("reports",reports.toString());
                 startActivity(intent);
             }
         });
@@ -142,9 +176,58 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
 
 
-    /* ##################################### MAP FUNCTIONS ################################### */
+    /* ##################################### VOLLEY FUNCTIONS ###################################
+    public void webService() {
+        Log.d("MEG", "In web services created my json objects before: " );
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-    /* ######################### LOCATION FUNCTIONS ################################## */
+
+        int code=0;
+        JsonArrayRequest stringRequest = new JsonArrayRequest(URL,new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        reports=response;
+                        Log.e("MEG", " response from server: " + response.toString());
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // hide progress dialog
+                        // VolleyLog.d("ME", "Error: " + error.getMessage());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        int sc = 0;
+                        if(networkResponse!=null && networkResponse.data!=null) {
+                            sc = networkResponse.statusCode;
+                        }
+
+                        Log.d("MEG", "Error: " +String.valueOf(sc)+" .. "+ error.getMessage());
+                        //  Toast.makeText(getApplicationContext(), "Error: " + sc, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "" + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+
+                }) {
+                    @Override
+                    protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                        if(response!=null)
+                            Log.d("MEG","Status code= "+response.statusCode);
+                        if (response.statusCode == 200) {
+                            Log.d("MEG","Success");
+
+                        }
+                        return super.parseNetworkResponse(response);
+                    }
+
+        };
+        queue.add(stringRequest);
+
+
+    }
+*/
+    /* ######################### LOCATION & MAP FUNCTIONS ################################## */
 
     private void getLatLng(){
 
@@ -269,12 +352,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         super.onBackPressed();
     }
 
-
-//
-//    public void exit(View view){ // stays logged in
-//        moveTaskToBack(true);
-//        WelcomePage.this.finish();
-//    }
 
 
     @Override
