@@ -1,6 +1,7 @@
 package com.example.megan.uwicommunity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -51,14 +52,23 @@ public class EventsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.bringToFront();
         fab.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                navToUpload(v);
             }
         });
     }
+
+    private void navToUpload(View v) {
+        Log.d("MEG","I was called");
+        Intent intent= new Intent(this,UploadEvent.class);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onResume(){
@@ -73,7 +83,7 @@ public class EventsActivity extends AppCompatActivity {
 
         }
     }
-
+/* ====================================== Volley Web Service to retrieve events ================== */
     private void webService() {
         Log.d("MEG", "In web services created my json objects before: ");
         RequestQueue queue = Volley.newRequestQueue(this);

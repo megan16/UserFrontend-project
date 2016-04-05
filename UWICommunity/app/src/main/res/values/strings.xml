@@ -62,4 +62,9 @@
     <string name="alerting_police">Alerting\nCampus\nPolice</string>
     <string name="title_activity_medical_contact">MedicalContact</string>
     <string name="title_activity_events">EventsActivity</string>
+    <string name="event_title">Title</string>
+    <string name="event_date">Event Date (YYYY/MM/DD)</string>
+    <string name="calBtn">Select</string>
+    <string name="phonenum">Contact Details</string>
+    <string name="uploadPicEvent">Do you have a flyer/post for the event?</string>
 </resources>

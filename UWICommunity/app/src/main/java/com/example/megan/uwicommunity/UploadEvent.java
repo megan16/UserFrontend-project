@@ -1,14 +1,13 @@
 package com.example.megan.uwicommunity;
-
+//TODO: N.B: Volley post String is not working so Async was used
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,13 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -45,45 +44,48 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-public class UploadCrime extends AppCompatActivity {
-    private static final String URL ="https://projectcomp3990.herokuapp.com/addCrime" ;
-    private Spinner locList;
-    private Spinner crimeTypeList;
+public class UploadEvent extends AppCompatActivity {
+
+    private static final String URL ="https://projectcomp3990.herokuapp.com/addEvent";
+    private EditText eDate;
+    private EditText desc;
+    private EditText title;
+    private EditText contact;
     private RadioGroup imageChoiceRadioGroup;
     private RadioButton answerRadioButton;
     private ImageView pictureUpload;
     private FloatingActionButton uploadButton;
-    private String fileURI=null;
     private final int CAMERA_CAPTURE_REQUEST_CODE=100;
     private final int GALLERY_REQUEST_CODE=200;
     private int cameraOrGalleryFlag;
     private Bitmap photo=null;
 
-    private EditText desc;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_crime);
+        setContentView(R.layout.activity_upload_event);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF1A1A")));
-        getSupportActionBar().setTitle("Upload Report");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setTitle("Upload Report");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        crimeTypeList= (Spinner) findViewById(R.id.crimeCategory);
-
-        locList= (Spinner)findViewById(R.id.crimeLoc);
-        addLocationToSpinner(); // add location stored in database to dropdown list
-        addCrimeTypesToSpinner(); //adds the categories of crimes to a list for a user to choice from
-        desc= (EditText) findViewById(R.id.description);
+        title= (EditText) findViewById(R.id.eTitle);
+        contact= (EditText) findViewById(R.id.ephoneNum);
+        eDate= (EditText) findViewById(R.id.eDate);
+        final Button calendarBtn = (Button) findViewById(R.id.calendarBtn);
+        calendarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calDialog();
+            }
+        });
 
         imageChoiceRadioGroup= (RadioGroup) findViewById(R.id.uploadPicChoice); //get radio group
         pictureUpload= (ImageView) findViewById(R.id.picture);
@@ -94,6 +96,8 @@ public class UploadCrime extends AppCompatActivity {
 
         getChoice(); //get whether or not the user has a picture to upload or not
 
+        desc= (EditText) findViewById(R.id.desc);
+
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,14 +107,49 @@ public class UploadCrime extends AppCompatActivity {
             }
         });
 
-        //Web services
-
-
     }
 
+    /* ================================== Date Picker ================================= */
+    public void calDialog() {
+
+        final Calendar cal = Calendar.getInstance();
+        int calYear = cal.get(Calendar.YEAR);
+        int calMonth = cal.get(Calendar.MONTH);
+        int calDay = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy/MM/dd",Locale.getDefault());
+                Date date=null;
+                try {
+
+                    String dateString=""+year+"/"+""+(monthOfYear+1)+"/"+dayOfMonth;
+                    date=sdf.parse(dateString);
+                    //setting it in edit text view
+                    String d8=sdf.format(date);
+                    eDate.setText(sdf.format(date));
+                    Log.d("MEG", "date string : " + sdf.format(date));
+
+
+
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, calYear, calMonth, calDay);
+
+        datePickerDialog.show();
+    }
+
+
+
+    /* ============================== Upload Image =================================== */
     private void uploadPicker(){
         final AlertDialog picker= new AlertDialog.Builder(this).create();
-        LayoutInflater factory= LayoutInflater.from(UploadCrime.this);
+        LayoutInflater factory= LayoutInflater.from(UploadEvent.this);
         final View view=factory.inflate(R.layout.upload_design, null);
         ImageButton imgbtn1= (ImageButton) view.findViewById(R.id.btn1);
         ImageButton imgbtn2= (ImageButton) view.findViewById(R.id.btn2);
@@ -144,7 +183,7 @@ public class UploadCrime extends AppCompatActivity {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(picker.getWindow().getAttributes());
         lp.width = 350;
-        lp.height =ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         lp.x=175;
         lp.y=100;
         picker.getWindow().setAttributes(lp);
@@ -160,28 +199,29 @@ public class UploadCrime extends AppCompatActivity {
             if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
                 // has a camera
                 Intent cameraIntent= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                fileURI= getMediaURI();
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
+                String fileURI = getMediaURI();
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileURI);
                 startActivityForResult(cameraIntent,CAMERA_CAPTURE_REQUEST_CODE);
 
             }else{
-                Toast.makeText(getApplicationContext(),"Camera not found on this device",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Camera not found on this device", Toast.LENGTH_LONG).show();
             }
 
 
         }else
-            if(choice==2){
-                //choose to choose from gallery
-                Intent galleryIntent= new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+        if(choice==2){
+            //choose to choose from gallery
+            Intent galleryIntent= new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
 
 
-            }
+        }
     }
 
     private static File getMediaFile() {
-        String folderName="UWI";
-        File pictureDir=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),folderName);
+        String folderName="Events";
+        File pictureDir=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                +File.separator+"UWI",folderName);
         if(!pictureDir.exists()){
             if(!pictureDir.mkdirs()){
                 Log.d("MEG","Failed to create directory: "+pictureDir.getPath());
@@ -189,9 +229,9 @@ public class UploadCrime extends AppCompatActivity {
         }
 
         //using time stamp to distinguish b/w multiple perps when storing on device
-        String timeStamp= new SimpleDateFormat("yyyymmdd_hhmm",Locale.getDefault()).format(new Date());
-        File mediaFile=new File(pictureDir.getPath()+File.separator+"Perp_"+timeStamp+".jpg");
-       // Log.d("MEG","Dir: "+mediaFile.getAbsolutePath());
+        String timeStamp= new SimpleDateFormat("yyyymmdd_hhmm", Locale.getDefault()).format(new Date());
+        File mediaFile=new File(pictureDir.getPath()+File.separator+"Event_"+timeStamp+".jpg");
+        Log.d("MEG","Dir: "+mediaFile.getAbsolutePath());
 
 
         return mediaFile;
@@ -205,7 +245,7 @@ public class UploadCrime extends AppCompatActivity {
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
         if(requestCode== CAMERA_CAPTURE_REQUEST_CODE){
             if(resultCode== RESULT_OK){
-            //success save image and add to image view
+                //success save image and add to image view
                 photo= (Bitmap) data.getExtras().get("data");
                 pictureUpload.setImageResource(0);
                 pictureUpload.setImageBitmap(photo);// set picture in the image view
@@ -225,35 +265,35 @@ public class UploadCrime extends AppCompatActivity {
 
         }else if(requestCode==GALLERY_REQUEST_CODE) {
 
-           if(resultCode==RESULT_OK) {
-               Uri uri= data.getData();
-               String [] filePathColumn= {MediaStore.Images.Media.DATA};
-               Cursor cursor= getContentResolver().query(uri,filePathColumn,null,null,null);
-               if (cursor != null) {
-                   cursor.moveToFirst();
-               }
+            if(resultCode==RESULT_OK) {
+                Uri uri= data.getData();
+                String [] filePathColumn= {MediaStore.Images.Media.DATA};
+                Cursor cursor= getContentResolver().query(uri,filePathColumn,null,null,null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                }
 
-               int columnIndex= cursor != null ? cursor.getColumnIndex(filePathColumn[0]) : 0;
-               assert cursor != null;
-               String picturePath=cursor.getString(columnIndex);
-               cursor.close();
-               pictureUpload.setImageResource(0);// removes the default picture
+                int columnIndex= cursor != null ? cursor.getColumnIndex(filePathColumn[0]) : 0;
+                assert cursor != null;
+                String picturePath=cursor.getString(columnIndex);
+                cursor.close();
+                pictureUpload.setImageResource(0);// removes the default picture
 
-               BitmapFactory.Options options=new BitmapFactory.Options();
-               options.inSampleSize=8;
+                BitmapFactory.Options options=new BitmapFactory.Options();
+                options.inSampleSize=8;
 
-               photo=BitmapFactory.decodeFile(picturePath,options);
-               pictureUpload.setImageBitmap(photo);// set picture in the image view
-               pictureUpload.setScaleType(ImageView.ScaleType.FIT_XY);
-               //photo=temp;
+                photo=BitmapFactory.decodeFile(picturePath,options);
+                pictureUpload.setImageBitmap(photo);// set picture in the image view
+                pictureUpload.setScaleType(ImageView.ScaleType.FIT_XY);
+                //photo=temp;
 
-           }else if(resultCode== RESULT_CANCELED){
-               Toast.makeText(getApplicationContext(),"No picture was selected",Toast.LENGTH_SHORT).show();
-               photo=null;
-           }else{
-               Toast.makeText(getApplicationContext(),"Sorry failed to retrieve photo",
-                       Toast.LENGTH_SHORT).show();
-           }
+            }else if(resultCode== RESULT_CANCELED){
+                Toast.makeText(getApplicationContext(),"No picture was selected",Toast.LENGTH_SHORT).show();
+                photo=null;
+            }else{
+                Toast.makeText(getApplicationContext(),"Sorry failed to retrieve photo",
+                        Toast.LENGTH_SHORT).show();
+            }
 
         }
     }
@@ -262,20 +302,14 @@ public class UploadCrime extends AppCompatActivity {
 
     private String prepareImageToSend(Bitmap photo) {
         ByteArrayOutputStream baos= new ByteArrayOutputStream();
-        byte[] byteArray = null;
         String imageDataString = null;
         Log.d("MEG","In prepareImagetoSend");
 
         if(photo!=null){
-//            int size=photo.getByteCount();
-//            ByteBuffer bb= ByteBuffer.allocate(size);
-//
-//            photo.copyPixelsToBuffer(bb);
-//            byteArray=bb.array();
-//            imageDataString=Base64.encodeToString(byteArray,Base64.DEFAULT);
+
             Log.d("MEG"," photo is not null");
             photo.compress(Bitmap.CompressFormat.JPEG,80,baos);
-            imageDataString=Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);
+            imageDataString= Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
             Log.d("MEG","String: "+imageDataString);
         }
 
@@ -336,48 +370,6 @@ public class UploadCrime extends AppCompatActivity {
     }
     /* ################################ End of image upload ################################### */
 
-
-
-    private void addCrimeTypesToSpinner() {
-        List<String> list= new ArrayList<String>();
-        list.add("Select Crime");
-        list.add("Motor Theft");
-        list.add("Robbery");
-        list.add("Rape");
-        list.add("Peeping Tom");
-        list.add("Assault");
-        list.add("Motor Vandalism");
-        list.add("Kidnapping");
-        list.add("Missing Person");
-
-
-        Collections.sort(list.subList(1, list.size()));// sort list for user dispaly
-        list.add("Other");// leave as last option
-        ArrayAdapter <String> adapter= new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        crimeTypeList.setAdapter(adapter);
-        
-
-
-    }
-
-    public void addLocationToSpinner(){
-        List<String> list= new ArrayList<String>();
-        //TODO:Make select location not a choice& default
-        list.add("Select Location");
-        list.add("Bus Route- North Gate (Yvettes)");
-        list.add("South Gate- Gate Boys");
-
-        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        locList.setAdapter(adapter);
-
-    }
-
-
-
     public void webService(RequestParams params){
 
         AsyncHttpClient client= new AsyncHttpClient();
@@ -424,57 +416,60 @@ public class UploadCrime extends AppCompatActivity {
     public void verifySubmission(){
 
         //check values 1st then verify via dialog
-        if(crimeTypeList.getSelectedItem().toString().equalsIgnoreCase("select crime")){
-            Toast.makeText(getApplicationContext(), "Invalid please select a crime",
-                    Toast.LENGTH_SHORT).show();
-        }else
-        if(locList.getSelectedItem().toString().equalsIgnoreCase("select location")){
-            Toast.makeText(getApplicationContext(), "Invalid please select a location",
-                    Toast.LENGTH_SHORT).show();
-        }else
+        if(eDate.getText().toString().isEmpty()){
+            Toast.makeText(getApplicationContext(),"Please enter date of the event",Toast.LENGTH_SHORT).show();
+        }
+        //can leave out contact details
+//        if(contact.getText().toString().isEmpty()){
+//            Toast.makeText(getApplicationContext(),"Please enter date of th",Toast.LENGTH_SHORT).show();
+//        }
+        if(title.getText().toString().isEmpty()){
+            Toast.makeText(getApplicationContext(),"Please enter a title",Toast.LENGTH_SHORT).show();
+        }
+
 
         if(imageChoiceRadioGroup.getCheckedRadioButtonId()== -1){
             Toast.makeText(getApplicationContext(), "Invalid please whether you have photographic evidence",
                     Toast.LENGTH_SHORT).show();
         }else {
 
-            //else all values should be valid
-            final RequestParams reqParams = new RequestParams();
-            reqParams.put("category", crimeTypeList.getSelectedItem().toString());
-            reqParams.put("desc", desc.getText().toString());
-            reqParams.put("loc", locList.getSelectedItem().toString());
-
-
-            final AlertDialog.Builder alert = new AlertDialog.Builder(UploadCrime.this);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(UploadEvent.this);
             alert.setMessage(R.string.verifySubmit);
             alert.setPositiveButton(R.string.yesP, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                     // perform web services
+                    //else all values should be valid
+                    //TODO: fix these values below in upload crime to this position
+                    final RequestParams reqParams = new RequestParams();
+                    reqParams.put("title",title.getText());
+                    reqParams.put("eDate", eDate.getText().toString());
+                    reqParams.put("desc", desc.getText().toString());
+                    reqParams.put("contact",contact.getText().toString());
+
                     // save the image
                     //send kill activity and go home
                     if (photo != null) {
-
                         if (cameraOrGalleryFlag == 1)
                             saveImageToFolderStorage(photo); //save image to directory as it's a live capture
+
                         Log.d("MEG", "Flag:" + cameraOrGalleryFlag);
                         String val = prepareImageToSend(photo);
-                        Log.d("MEG", "PHoto:" + val);
+                        Log.d("MEG", "Photo:" + val);
                         reqParams.put("picture", val);
                         photo = null; // clean global bitmap to avoid accidental dups
-                        //photo = null;//reset
-                    } else {
+                        }
+                    else {
                         //default pic
                         Bitmap def = BitmapFactory.decodeResource(getResources(), R.drawable.user1);
                         if (def != null) {
                             String val = prepareImageToSend(def);// to avoid retrieval of image returning null exceptions
-                            // Log.d("MEG", "PHoto:" + val);
                             reqParams.put("picture", val);
                         }
                     }
 
-                    // Log.d("MEG", "Photo is null");
                     webService(reqParams);
                     photo = null;//reset
                     closeActivity();
@@ -499,12 +494,11 @@ public class UploadCrime extends AppCompatActivity {
 
     }
 
-
-
     private void closeActivity(){
         this.finish();
     }
-/* ################################################################################################*/
+
+    /* ################################################################################################*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -514,9 +508,7 @@ public class UploadCrime extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

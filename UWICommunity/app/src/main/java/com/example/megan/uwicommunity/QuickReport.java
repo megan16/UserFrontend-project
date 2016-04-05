@@ -63,19 +63,18 @@ public class QuickReport extends AppCompatActivity {
 
         Notification notification= new NotificationCompat.Builder(this)
                 .setWhen(0)
-                .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle("Crime Bulletin")
                 .setContentText("Details of a crime goes here")
                 .setSmallIcon(R.drawable.user1)
                 .setContentIntent(pendingIntent)
                 .setLights(Color.RED, 300, 300)
-                .setAutoCancel(true)
-                .addAction(0,"Dismiss",pCancel)
+                .setOngoing(false)
+                .addAction(0, "Dismiss", pCancel)
                 .build();
                 //.addAction(R.drawable.common_plus_signin_btn_icon_dark_normal,"Accept",pendingIntent);
-
+//.setPriority(Notification.PRIORITY_MAX) => for api 15 ^
        // notification.flags |=Notification.FLAG_AUTO_CANCEL;
-        notification.flags |=Notification.FLAG_ONLY_ALERT_ONCE;
+        //notification.flags |=Notification.FLAG_ONLY_ALERT_ONCE;
         notification.flags |= Notification.DEFAULT_SOUND;
         notification.flags |=Notification.DEFAULT_VIBRATE;
         notification.flags |=Notification.FLAG_SHOW_LIGHTS;

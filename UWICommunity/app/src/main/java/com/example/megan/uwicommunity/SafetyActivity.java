@@ -75,6 +75,7 @@ public class SafetyActivity extends AppCompatActivity
         setContentView(R.layout.activity_safety);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         list= (ListView) findViewById(R.id.listCrimeReports);
         reportList= new ArrayList<HashMap<String,String>>();
         picturesList= new ArrayList<File>();
@@ -85,7 +86,10 @@ public class SafetyActivity extends AppCompatActivity
 
 
         olderCode();
-        //mSocket.connect();
+        mSocket.connect();
+        if(mSocket.connected()){
+            Log.d(TAG,"Scoket is connected");
+        }
         //connectWebSocket();
         //attemptSend();
 
@@ -122,13 +126,7 @@ public class SafetyActivity extends AppCompatActivity
     private void olderCode() {
         try {
              mSocket = IO.socket("https://projectcomp3990.herokuapp.com");
-            mSocket.on("info", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Log.d(TAG, "Received: " );
-                    //mSocket.emit("crimereports");
-                }
-            }).emit("crimereports", new Emitter.Listener() {
+            mSocket.emit("crimereports", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     Log.d(TAG, "Received reports: "+args[0]);
@@ -242,6 +240,9 @@ public class SafetyActivity extends AppCompatActivity
         super.onResume();
         if(isNetworkAvailable(SafetyActivity.this)){
             //list.setAdapter(null);//clean all data
+            if(!mSocket.connected()){
+                mSocket.connect();
+            }
 
             //add to screen
             if(adapter!=null)
